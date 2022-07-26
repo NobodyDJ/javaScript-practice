@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+</body>
+<script>
+    //会报错 oldValue没有声明
+    // var newValue=oldValue;//报错oldValue没有定义
+    //以下操作含义是属性查询
+    // var newValue=window.oldValue
+    // console.log(newValue)// newValue就没有定义
+    // console.log('----------------');
+    // // top指向window最外层 parent指向当前窗口的外层窗口 self始终指向自己
+    // window.moveTo(0,0)
+    // window.moveBy(0,100)
+    // window.moveTo(200, 300);
+    // 以上方法好像被禁用了
+    // 现代浏览器支持4个属性：innerWidth innerHeight返回了浏览器窗口中页面视口的大小
+    // outerWidth outerHeight是返回浏览器窗口自身的大小
+    // let pageWidth = window.innerWidth, pageHeight = window.innerHeight;
+    window.resizeTo(200, 100);
+    console.log(window.resizeTo(200, 100));
+    // scroll()(已经弃用)、scrollTo()(表示滚动到具体位置)和scrollBy()(表示滚动多少距离)
+    // 都接受x与y两个参数
+    console.log('-----------------------------')
+    //window.open()方法接受两个参数
+    window.open("http://www.wrox.com/", "topFrame"); //打开一个窗口相当于点击了a标签
+
+</script>
+</html>

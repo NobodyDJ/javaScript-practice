@@ -142,19 +142,30 @@
     // console.log(g.return(4));// 强制关闭了生成器
     // console.log(g);// closed状态
     // console.log('-------------')
-    function* generatorFn(){
-        for(const x of [1,2,3]){
-            yield x;
-        }
+    // function* generatorFn(){
+    //     for(const x of [1,2,3]){
+    //         yield x;
+    //     }
+    // }
+    // const g =generatorFn();
+    // console.log(g);
+    // try {
+    //     g.throw('foo');
+    // } catch (error) {
+    //     console.log(error);
+    // }
+    // console.log(g);
+    function* fn(init){
+        console.log(init);
+        console.log(3*(yield 1 +init))
+        const a = 3 * (yield 1 + init);
+        const b = yield 3;
+        console.log(a,b); // 18 8
     }
-    const g =generatorFn();
-    console.log(g);
-    try {
-        g.throw('foo');
-    } catch (error) {
-        console.log(error);
-    }
-    console.log(g);
+    const obj = fn(10); 
+    console.log(obj.next()); // {value:11, done:false}
+    // console.log(obj.next(6)); // {value:3, done:false}
+    // console.log(obj.next(8)); // {value:undefined, done:false}
     
     
 </script>
