@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 生成器的形式是一个函数，函数名称前面加一个星号(*)表示为星号
+    // 标识生成器函数的星号不会受到两侧空格的影响
+    // 生成器对象一开始是出于暂停执行的状态
+    // 生成器也生成了iterator接口，因此也有next()方法
+    // function* generatorFn(){}
+    // const g = generatorFn();
+    // console.log(g);// generatorFn 起始状态为suspended
+    // console.log(g.next);
+    // console.log('-----------------------------------------------')
+    // function* generatorFn(){}
+    // let generatorObject=generatorFn()
+    // console.log(generatorObject)
+    // console.log(generatorObject.next()) //done为true
+    //生成器函数只会在初次调用next()方法后开始执行
+    // function* generatorFn(){
+    //     console.log('foobar')
+    // }
+    // let generatorObject=generatorFn()
+    // generatorObject.next() // 生成器只有首次调用next()方法才会执行
+    // console.log('-------------------------')
+    // function* generatorFn(){
+    //     yield
+    // }
+    // let generatorObject=generatorFn()
+    // console.log(generatorObject.next())// done:false value:undefined
+    // console.log(generatorObject.next())// done:true value:undefined
+    // console.log('-------------------------')
+    // function* generatorFn(){
+    //     yield 'foo';
+    //     yield 'bar';
+    //     return 'baz'
+    // }
+    // let generatorObject=generatorFn()
+    // console.log(generatorObject.next());// value:'foo' done:false
+    // console.log(generatorObject.next());// value:'bar' done:false
+    // console.log(generatorObject.next());// value:'baz' done:true
+    //生成器对象上调用next()不会影响其他生成器
+    // yield只能子啊生成器函数内部使用，使用箭头函数嵌套函数都是无效的
+    // console.log('---------------------');
+    // 可以把生成器对象看成一个可迭代的对象 利用循环来遍历
+    // function* generatorFn(){
+    //     yield 1;
+    //     yield 2;
+    //     yield 3;
+    // }
+    // for(const x of generatorFn()){
+    //     console.log(x);
+    // }
+    // console.log('----------------------');
+    // yield关键字并非只能用一IC，可以将其定义为一个无穷计数生成器
+    // function* generatorFn(){
+    //     for(let i=0;;i++){
+    //         yield i;
+    //     }
+    // }
+    // let generatorObject=generatorFn();
+    // console.log(generatorObject.next());//可以无限执行这行代码打印出来的值不断+1
+    // console.log('--------------------------');
+    // function* range(start,end){
+    //     while(end>start){
+    //         yield start++;
+    //     }
+    // }
+    // for(const x of range(4,7)){
+    //     console.log(x); 
+    // }
+    // 产生一个可迭代的对象 在yield傍边加一个*号,可以让它成为一个可以迭代的对象,让它一次产出一个值
+    // 同样星号两侧的空格不会影响它的行为
+    // function* generatorFn(){
+    //     yield* [1,2,3]
+    // }
+    // let generatorObject=generatorFn()
+
+    // for(const x of generatorObject){
+    //     console.log(x);
+    // }
+    // console.log('--------------------------------');
+    // function* generatorFn(){
+    //     console.log('iter value',yield* [1,2,3]);
+    // }
+    // for(const x of generatorFn()){
+    //     console.log('value',x);
+    // }
+    // 实现生成一个随机的双向图
+    // class Node{
+    //     constructor(id){
+    //         this.id;
+    //         this.neighbors=new Set()
+    //     }
+    //     connect(node){
+    //         if(node!==this){
+    //             this.neighbors.add(node)
+    //             node.neighbors.add(this)
+    //         }
+    //     }
+    // }
+    // class RandomGraph{
+    //     constructor(size){
+    //         this.nodes=new Set();
+    //         for(let i=0;i<size;i++){
+    //             this.nodes.add(new Node(i));
+    //         }
+    //         //随机连接节点
+    //         const threshold=1/size;
+    //         for(const x of this.nodes){
+    //             for(const y of this.nodes){
+    //                 if(Math.random()<threshold){
+    //                     x.connect(y);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     print() {
+    //     for(const node of this.nodes){
+    //         const ids =[...node.neighbors].map((n)=>n.id).join(',');
+    //         console.log(`${node.id}:${ids}`);
+    //     }
+    // }
+    // }
+
+    // const g = new RandomGraph(6);
+    // g.print();
+    // function* generatorFn(){
+    //     for(const x of[1,2,3]){
+    //         yield x;
+    //     }
+    // }
+    // const g=generatorFn();
+    // console.log(g);// suspended状态
+    // console.log(g.return(4));// 强制关闭了生成器
+    // console.log(g);// closed状态
+    // console.log('-------------')
+    function* generatorFn(){
+        for(const x of [1,2,3]){
+            yield x;
+        }
+    }
+    const g =generatorFn();
+    console.log(g);
+    try {
+        g.throw('foo');
+    } catch (error) {
+        console.log(error);
+    }
+    console.log(g);
+    
+    
+</script>
+</html>
