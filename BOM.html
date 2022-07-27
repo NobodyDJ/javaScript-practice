@@ -9,6 +9,7 @@
 <body>
 </body>
 <script>
+    // window的相关知识点
     //会报错 oldValue没有声明
     // var newValue=oldValue;//报错oldValue没有定义
     //以下操作含义是属性查询
@@ -45,15 +46,90 @@
     // if (blocked){ 
     //     alert("The popup was blocked!"); 
     // }
-    let num = 0, intervalId = null; 
-    let max = 10; 
-    let incrementNumber = function() { 
-        num++; // 如果达到最大值，则取消所有未执行的任务 
-        if (num == max) { 
-            clearInterval(intervalId); 
-            alert("Done"); 
-            } 
-        }
-    intervalId = setInterval(incrementNumber, 500);
+    // let num = 0, intervalId = null; 
+    // let max = 10; 
+    // let incrementNumber = function() { 
+    //     num++; // 如果达到最大值，则取消所有未执行的任务 
+    //     if (num == max) { 
+    //         clearInterval(intervalId); 
+    //         alert("Done"); 
+    //         } 
+    //     }
+    // intervalId = setInterval(incrementNumber, 500);
+
+
+
+    //location的相关知识点
+    // let getQueryStringArgs=function(){
+    //     // location.search直接拿到以问号开头的url的查询字符串 取到没有问好开头的查询字符
+    //     let qs=(location.search.length> 0 ? location.search.substring(1) : 0)
+    //     console.log(qs);
+    //     let args={}
+    //     for(let item of qs.split("&").map(kv=>kv.split("="))){
+    //         let name=decodeURIComponent(item[0]), value=decodeURIComponent(item[1])
+    //         if(name.length){
+    //             args[name]=value
+    //         }
+    //     }
+    //     return args
+    // }
+    // let str='?q=javascript&num=10'
+    // // 是先将字符串以'&'进行分割为一个数组中包含的各个元素
+    // console.log(str.split("&"));// 0: "?q=javascript" 1: "num=10"
+    // // 然后将这个数组中的元素，每一个元素以'='分割开，此元素就变成了一个数组返回回来
+    // console.log(str.split("&").map(kv=>kv.split("=")))// 0: (2) ['?q', 'javascript'] 1: (2) ['num', '10']
+    // console.log('---------------------')
+    // console.log(location.search);
+    // let args=getQueryStringArgs()
+    // alert(args["q"]); // "javascript" 
+    // alert(args["num"]); // "10"
+    // console.log('-------------------')
+    //URLSearchParams是一个实例上面暴露了get(),set()和delete()方法
+    // let qs="?q=javascript&num=10"
+    // let searchParams=new URLSearchParams(qs)
+    // console.log(searchParams)
+    // location.assign("http://www.wrox.com");
+    // location.hash = "#section1";//设置散列值
+    // location.search = "?q=javascript";//设置查询字符串
+    // location.hostname = "www.somewhere.com";//设置服务器名
+    // location.pathname = "mydir";//设置URL路径
+    // location.port = 8080;//设置服务端口号
+    // location.reload();//重新加载，可能从缓存加载
+    // location.reload(true);//重新加载，从服务器中加载
+
+    // navigator对象接口定义的属性和方法位于P589页
+    // navigator对象通常用于确定浏览器的类型
+    // 以下方法是用来确定改浏览器下是否拥有某个插件
+    // let hasPlugin=function(name){
+    //     name=name.toLowerCase();
+    //     for(let plugin of window.navigator.plugins){
+    //         if(plugin.name.toLocaleLowerCase().indexOf(name)>-1){
+    //             return true
+    //         }
+    //     }
+    //     return false
+    // }
+    // alert(hasPlugin("Flash"))
+    // alert(hasPlugin("Vue.js"))
+
+    // screen对象是用来保存客户都拿的信息的 P596页总结了screen对象上暴露的对象
+
+    // history对象 听常用的和vue router有关
+    // history对象表示当前窗口首次使用以来用户的导航历史记录，每个indow都有自己的history对象
+    // history中的go()方法是用来记录沿任何方向上的导航，里面只接受1个参数，参数可以是一个整数
+    // 负数表示后台几步，正数表示前进几步
+    // history.go(1);
+    // history.go(-1);
+    // // go()方法也有两个简写一个是forward()一个是back()，就是字面含义
+    // // history.length 记录了历史记录中有条目数目
+    // console.log(history.length)
+    // 09之后，通过改变URL中的散列值来表示浏览器的历史记录中增加一条新记录来模拟页面的前进与后退
+    // 这样页面就可以不会因为导航而出发页面刷新，vue也利用了这个特性
+    // history.pushState()方法可以让浏览器改变URL但不加载新页面
+    // 这里要用npx创建一个静态资源服务器 npx serve BOM.html，不然无法使用
+    // 因为pushState是不能在file协议上使用的，只能在静态服务器上
+    // npx临时去来远程的npm,搭建一个临时项目
+    let stateObject={foo:"bar"}
+    history.pushState(stateObject, "My title", "baz.html");
 </script>
 </html>
