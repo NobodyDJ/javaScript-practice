@@ -1,0 +1,143 @@
+<!-- 这里也算一个节点 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM文档对象模型</title>
+</head>
+<body>
+     <!-- <ul id="myList">
+        <li>item 1</li>
+        <li>item 2</li> 
+        <li>item 3</li> 
+    </ul>
+    <div id="myDiv">Some text</div>
+    <p>哟西</p>
+    <h2>哟西2222</h2>  -->
+    <!-- <fieldset> 
+        <legend>Which color do you prefer?</legend> 
+        <ul>
+            <li>
+                <input type="radio" value="red" name="color" id="colorRed"> 
+                <label for="colorRed">Red</label> 
+            </li> 
+            <li>
+                <input type="radio" value="green" name="color" id="colorGreen"> 
+                <label for="colorGreen">Green</label> 
+            </li> 
+            <li>
+                <input type="radio" value="blue" name="color" id="colorBlue"> 
+                <label for="colorBlue">Blue</label> 
+            </li> 
+        </ul> 
+    </fieldset> -->
+    <!-- 使用了文档写入的功能 -->
+    <!-- <p>This is some content that you won't get to see because it will be overwritten.</p> 
+    <script type="text/javascript"> 
+    window.onload = function(){ 
+        document.write("Hello world!"); 
+    }; 
+    </script> -->
+    <!-- <div id="myDiv"></div> -->
+    <!-- dir表示语言书写方向 -->
+    <div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>
+</body>
+<script>
+    // 四个操作节点的方法 appendChild() insertBefore() replaceChild() removeChild()
+    // 假设someNode有多个子节点 
+    // let returnedSomeNode = someNode.appendChild(someNode.firstChild); 
+    // alert(returnedSomeNode == someNode.firstChild); // false 
+    // alert(returnedSomeNode == someNode.lastChild); // true
+
+
+    // let firstChild=someNode.childNodes[0]
+    // // 作为最后一个子节点插入
+    // returnedNode = someNode.insertBefore(newNode, null); 
+    // alert(newNode == someNode.lastChild); // true 
+    // // 作为新的第一个子节点插入 
+    // returnedNode = someNode.insertBefore(newNode, someNode.firstChild); 
+    // alert(returnedNode == newNode); // true 
+    // alert(newNode == someNode.firstChild); // true 
+
+    // // 插入最后一个子节点前面 
+    // returnedNode = someNode.insertBefore(newNode, someNode.lastChild); 
+    // alert(newNode == someNode.childNodes[someNode.childNodes.length - 2]); // true
+
+    // // 替换第一个子节点 
+    // let returnedNode = someNode.replaceChild(newNode, someNode.firstChild);
+
+    // // 替换最后一个子节点 
+    // returnedNode = someNode.replaceChild(newNode, someNode.lastChild);
+
+    // // 删除第一个子节点 
+    // let formerFirstChild = someNode.removeChild(someNode.firstChild);
+
+    // // 删除最后一个子节点 
+    // let formerLastChild = someNode.removeChild(someNode.lastChild);
+
+    // let deepList=myList.cloneNode(true);
+    // console.log(deepList.childNodes.length);//这里打印出来是7，深度复制是复制其节点以及整个子DOM树
+    // let shallowList=myList.cloneNode(false)
+    // console.log(shallowList.childNodes.length)
+
+    // 每一个<>都算一个节点
+    // let html =document.documentElement;
+    // console.log(html);
+    // console.log(document.childNodes[2])
+    // console.log(html===document.childNodes[2])
+    // console.log(html===document.firstChild)
+
+    // let body =document.body
+    // console.log(body)// <body>....</body>
+    // let doctype = document.doctype; // 取得对<!doctype>的引用
+    // console.log(doctype)// <!DOCTYPE html>
+
+    // let originalTitle=document.title;
+    // console.log(originalTitle)
+    // document.title="我被修改了"
+    // console.log(document.title)
+    
+    // URL domain referrer
+    // let url=document.URL;
+    // console.log(url);
+    // let domain=document.domain;
+    // console.log(domain)
+    // let referrer=document.referrer
+    // console.log(referrer)
+
+    // getElementByID通过指定的ID来获取DOM元素
+    // 如果出现多个相同ID的标签，那么会默认获取第一个
+    // let div=document.getElementById("myDiv");
+    // console.log(div)
+    // // getElementByTagName获取标签名称
+    // let a=document.getElementsByTagName("p")
+    // console.log(a)
+    // let images = document.getElementsByTagName("img");
+    // console.log(images)
+    // console.log(images[0].src);
+    // console.log(images.item(0).src);//效果同上
+    // console.log(images.namedItem("car"))// 拿到这个img标签s 
+    // getElementByTagName()可以不区分大小写
+
+    // let radios=document.getElementsByName("color")
+    // console.log(radios)// 获取所有name为color的标签
+    console.log('--------------------------')
+    // 文档写入
+    // window.onload时间处理程序，将调用document.write()的函数推迟到整个页面加载完毕后执行，"Hello world!"会重写整个页面内容
+
+    //Element类型
+    // let div=document.getElementById("myDiv");
+    // console.log(div.tagName.toLowerCase());//返回了大写的DIV 所有避免大小写比较可以使用toLowerCase()方法
+    // console.log(div.tagName===div.nodeName)
+    
+    // HTML元素
+    let div = document.getElementById("myDiv"); 
+    console.log(div.id); // "myDiv" 
+    console.log(div.className); // "bd" 
+    console.log(div.title); // "Body text" 
+    console.log(div.lang); // "en" 
+    console.log(div.dir); // "ltr"
+</script>
+</html>
