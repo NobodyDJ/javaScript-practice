@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
     <title>DOM文档对象模型</title>
 </head>
 <body>
@@ -42,7 +43,24 @@
     </script> -->
     <!-- <div id="myDiv"></div> -->
     <!-- dir表示语言书写方向 -->
-    <div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>
+    <!-- <div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div> -->
+    <!-- <div></div>
+    <div> </div>
+    <div>Hello World!</div> -->
+    <!-- <ul id="myList"></ul> -->
+    <!-- <div class="test">你好</div>
+    <table border="1" width="100%"> 
+        <tbody> 
+            <tr>
+                <td>Cell 1,1</td> 
+                <td>Cell 2,1</td> 
+            </tr> 
+            <tr>
+                <td>Cell 1,2</td> 
+                <td>Cell 2,2</td> 
+            </tr> 
+        </tbody> 
+    </table> -->
 </body>
 <script>
     // 四个操作节点的方法 appendChild() insertBefore() replaceChild() removeChild()
@@ -133,11 +151,155 @@
     // console.log(div.tagName===div.nodeName)
     
     // HTML元素
-    let div = document.getElementById("myDiv"); 
-    console.log(div.id); // "myDiv" 
-    console.log(div.className); // "bd" 
-    console.log(div.title); // "Body text" 
-    console.log(div.lang); // "en" 
-    console.log(div.dir); // "ltr"
+    // let div = document.getElementById("myDiv"); 
+    // console.log(div.id); // "myDiv" 
+    // console.log(div.className); // "bd" 
+    // console.log(div.title); // "Body text" 
+    // console.log(div.lang); // "en" 
+    // console.log(div.dir); // "ltr"
+
+    // 操作属性的四个方法：1.获取属性getAttribute 2.设置属性setAttribute 3.移除属性removeAttribute
+
+    // 以键值对的形式存储元素下的属性
+    // function outputAttributes(element){
+    //     let pairs=[]
+    //     for(let i=0,len=element.attributes.length;i<len;i++){
+    //         const attribute=element.attributes[i]
+    //         pairs.push(`${attribute.nodeName}="${attribute.nodeValue}"`)
+    //     }
+    //     return pairs.join(" ")
+    // }
+    // let a=document.getElementById("myDiv")//拿到这个标签
+    // let b=document.getElementsByTagName("div")//数组
+    // console.log(a)
+    // console.log(b)
+    // console.log(outputAttributes(a));
+
+    // 创建节点之后要插入这个新节点
+    // let element = document.createElement("div"); 
+    // element.className = "message";
+    // let textNode = document.createTextNode("Hello world!"); 
+    // element.appendChild(textNode); 
+    // document.body.appendChild(element);
+
+    // let element = document.createElement("div"); 
+    // element.className = "message"; 
+    // let textNode = document.createTextNode("Hello world!");
+    // element.appendChild(textNode); 
+    // let anotherTextNode = document.createTextNode("Yippee!"); 
+    // element.appendChild(anotherTextNode); 
+    // document.body.appendChild(element);
+
+    // 有一个合并相邻文本节点的方法
+    // 在包含两个或多个相邻文本节点的父节点上调用normalize()时，所有同胞文本节点会被合并为一个文本节点
+    // let element = document.createElement("div"); 
+    // element.className = "message"; 
+    // let textNode = document.createTextNode("Hello world!"); 
+    // element.appendChild(textNode);
+    // let anotherTextNode = document.createTextNode("Yippee!"); 
+    // element.appendChild(anotherTextNode);
+    // document.body.appendChild(element); 
+    // console.log(element.childNodes.length); // 2 
+    // element.normalize(); 
+    // console.log(element.childNodes.length); // 1 
+    // console.log(element.firstChild.nodeValue); // "Hello world!Yippee!"
+
+    // splitText()方法是可以在指定的偏移位置拆分nodeValue，将一个文本节点拆成两个文本节点
+    // let element = document.createElement("div"); 
+    // element.className = "message"; 
+    // let textNode = document.createTextNode("Hello world!");
+    // element.appendChild(textNode); 
+    // document.body.appendChild(element);
+    // let newNode = element.firstChild.splitText(5); 
+    // console.log(element.firstChild.nodeValue); // "Hello" 
+    // console.log(newNode.nodeValue); // " world!" 
+    // console.log(element.childNodes.length); // 2
+
+    // comment类型与Text类型是继承同一个基类的
+    // let div = document.getElementById("myDiv"); 
+    // let comment = div.firstChild; 
+    // console.log(comment.data); // "A comment"
+
+    // DocumentFragment类型 文档片段
+    // 可以利用文档片段来减少文档的渲染次数
+    // 这样可以减少浏览器的渲染次数，提高性能由3次渲染变成了一次渲染
+    
+    // let fragment=document.createDocumentFragment();
+    // let ul=document.getElementById("myList");
+
+    // for(let i=0;i<3;i++){
+    //     let li=document.createElement("li");
+    //     li.appendChild(document.createTextNode(`Item ${i+1}`));
+    //     fragment.appendChild(li);
+    // }
+    // ul.appendChild(fragment)
+
+    // DOM编程
+    // function loadScript(url){
+    //     let script=document.createElement("script")
+    //     script.src=url;
+    //     document.body.appendChild(script);
+    // }
+    // loadScript("client.js")
+
+    // function loadScriptString(code){ 
+    //     var script = document.createElement("script"); 
+    //     script.type = "text/javascript"; 
+    //     try { 
+    //         script.appendChild(document.createTextNode(code)); 
+    //     } catch (ex){ 
+    //         script.text = code; 
+    //     }
+    //     document.body.appendChild(script); 
+    // }
+    // loadScriptString("function sayHi(){alert('hi');}");
+    // sayHi()//执行成功了
+    console.log('-----------------------')
+    // 动态样式
+    // function loadStyles(url){
+    //     let link=document.createElement("link");
+    //     link.rel="stylesheet";
+    //     link.type="text/css";
+    //     link.href=url;
+    //     let head=document.getElementsByTagName("head")[0];
+    //     head.appendChild(link)
+    // }
+    // loadStyles("style.css")
+    //IE没有办法给<style>添加子节点的代码 只能使用对象.属性的样式来添加样式
+    // function loadStyleString(css){
+    //     let style=document.createElement("style")
+    //     style.type="text/css"
+    //     try{
+    //         style.appendChild(document.createTextNode(css))
+    //     }catch(e){
+    //         style.styleSheet.cssText=css;
+    //     }
+    //     let head=document.getElementsByTagName("head")[0]
+    //     head.appendChild(style)
+    // }
+    // loadStyleString("body{background-color:red}")
+    console.log('--------------------')
+    // js创建表格分为3个步骤 创建表格主体，插入表格行，在该行下添加若干表元即可
+    // 创建表格 
+    let table = document.createElement("table"); 
+    table.border = 1; 
+    table.width = "100%"; 
+    // 创建表体 
+    let tbody = document.createElement("tbody"); 
+    table.appendChild(tbody); 
+    // 创建第一行 
+    tbody.insertRow(0);
+    tbody.rows[0].insertCell(0); 
+    tbody.rows[0].cells[0].appendChild(document.createTextNode("Cell 1,1")); 
+    tbody.rows[0].insertCell(1); 
+    tbody.rows[0].cells[1].appendChild(document.createTextNode("Cell 2,1")); 
+    // 创建第二行 
+    tbody.insertRow(1); 
+    tbody.rows[1].insertCell(0); 
+    tbody.rows[1].cells[0].appendChild(document.createTextNode("Cell 1,2")); 
+    tbody.rows[1].insertCell(1);
+   tbody.rows[1].cells[1].appendChild(document.createTextNode("Cell 2,2")); 
+   // 把表格添加到文档主体 
+   document.body.appendChild(table);
 </script>
 </html>
