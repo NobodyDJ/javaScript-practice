@@ -281,25 +281,82 @@
     console.log('--------------------')
     // js创建表格分为3个步骤 创建表格主体，插入表格行，在该行下添加若干表元即可
     // 创建表格 
-    let table = document.createElement("table"); 
-    table.border = 1; 
-    table.width = "100%"; 
-    // 创建表体 
-    let tbody = document.createElement("tbody"); 
-    table.appendChild(tbody); 
-    // 创建第一行 
-    tbody.insertRow(0);
-    tbody.rows[0].insertCell(0); 
-    tbody.rows[0].cells[0].appendChild(document.createTextNode("Cell 1,1")); 
-    tbody.rows[0].insertCell(1); 
-    tbody.rows[0].cells[1].appendChild(document.createTextNode("Cell 2,1")); 
-    // 创建第二行 
-    tbody.insertRow(1); 
-    tbody.rows[1].insertCell(0); 
-    tbody.rows[1].cells[0].appendChild(document.createTextNode("Cell 1,2")); 
-    tbody.rows[1].insertCell(1);
-   tbody.rows[1].cells[1].appendChild(document.createTextNode("Cell 2,2")); 
-   // 把表格添加到文档主体 
-   document.body.appendChild(table);
+//     let table = document.createElement("table"); 
+//     table.border = 1; 
+//     table.width = "100%"; 
+//     // 创建表体 
+//     let tbody = document.createElement("tbody"); 
+//     table.appendChild(tbody); 
+//     // 创建第一行 
+//     tbody.insertRow(0);
+//     tbody.rows[0].insertCell(0); 
+//     tbody.rows[0].cells[0].appendChild(document.createTextNode("Cell 1,1")); 
+//     tbody.rows[0].insertCell(1); 
+//     tbody.rows[0].cells[1].appendChild(document.createTextNode("Cell 2,1")); 
+//     // 创建第二行 
+//     tbody.insertRow(1); 
+//     tbody.rows[1].insertCell(0); 
+//     tbody.rows[1].cells[0].appendChild(document.createTextNode("Cell 1,2")); 
+//     tbody.rows[1].insertCell(1);
+//    tbody.rows[1].cells[1].appendChild(document.createTextNode("Cell 2,2")); 
+//    // 把表格添加到文档主体 
+//    document.body.appendChild(table);
+      console.log('-----------------------------')
+      // 避免无限循环的两种方式：
+      // 1.保存初始长度，以该长度作为循环结束数值
+      // 2.使用反向迭代，将长度作为起始位置
+      console.log('--------------------------------')
+
+      // MutationObserver接口
+    //   let observer=new MutationObserver(()=>console.log('DOM was mutated!'))
+    //   console.log(observer)
+    // 利用observe方法来观察DOM元素中的改变
+    // let observer=new MutationObserver(()=>console.log('<body> attributes changed'))
+    // // 深度监听body标签中的属性变化
+    // observer.observe(document.body,{attributes:true});
+    // document.body.className='foo'
+    // console.log('Change body class')//最后会执行的
+
+    // 第三个参数是命名空间的变化 如果连续改变DOM元素的属性值，每次改动会保存在数组中
+    // let observer=new MutationObserver((mutationRecords)=>console.log(mutationRecords));
+    // observer.observe(document.body,{attributes: true})
+    // document.body.setAttribute('foo','bar')
+
+    // let observer = new MutationObserver( (mutationRecords) => console.log(mutationRecords)); 
+    // observer.observe(document.body, { attributes: true }); 
+    // document.body.className = 'foo'; 
+    // document.body.className = 'bar'; 
+    // document.body.className = 'baz';
+    //传给回调函数的第二个参数是观察变化的MutationObserver的实例
+
+    // disconnect()方法可以停止变化时间的回调，后面要进行的异步执行的回调都会结束
+    // let observer=new MutationObserver(()=>console.log('<body> attributes changed'))
+    // observer.observe(document.body,{attributes: true});
+    // document.body.className='foo';
+    // observer.disconnect()
+    // document.body.className='bar';
+    //以上结果都没有日志输出
+
+    // Mutation的观察范围
+    // 以下MutationObserver可以监视每次body标签上属性的改变
+    // let observer=new MutationObserver((mutationRecords)=>console.log(mutationRecords));
+    // observer.observe(document.body,{attributes: true});
+    // document.body.setAttribute('foo','bar');
+    // document.body.setAttribute('foo','baz');
+    // document.body.removeAttribute('foo');
+
+    let observer =new MutationObserver(
+        (mutationRecords)=>console.log(mutationRecords.map((x)=>x.oldValue))
+    )
+    document.body.innerText='foo';
+    observer.observe(document.body.firstChild,{ characterDataOldValue: true });
+    document.body.innerText='foo';
+    document.body.innerText='bar';
+    document.body.firstChild.textContent='baz';
+    // let sum=0;
+    // for(let i=0;i<5;i++){
+    //     ++sum
+    //     console.log(sum);
+    // }
 </script>
 </html>
