@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <p><strong>hello</strong></p>
+    <div class="username">username</div>
+    <div class="current">current</div>
+
+    <ul id="myDiv">
+        <li class="selected">1</li>
+        <li class="selected">2</li>
+        <li>3</li>
+    </ul> -->
+    <!-- <div id="001" class="bd user disabled"></div> -->
+    <!-- <div id="content">
+        <p>This is a <strong>paragraph</strong> with a list following it.</p> 
+        <ul id="inner">
+            <li>Item 1</li> 
+            <li>Item 2</li> 
+            <li>Item 3</li> 
+        </ul>
+    </div> -->
+    <button onclick="goto(19)">点击</button>
+    <form action="/demo/demo_form.asp" id="myForm">
+        First name:<br>
+        <input type="text" name="firstname" value="Mickey">
+        <br>
+        Last name:<br>
+        <input type="text" name="lastname" value="Mouse">
+        <br><br>
+        <input type="submit" value="Submit">
+    </form> 
+        
+    <p>如果您点击提交，表单数据会被发送到名为 demo_form.asp 的页面。</p>
+        
+</body>
+<script>
+    // 获取所有p元素 子元素的strong元素
+    // let strongSet=document.querySelectorAll("p strong")
+    // console.log(strongSet)
+    // let allCurrentUsernames=document.getElementsByClassName("username current");
+    // console.log(allCurrentUsernames);
+    // let selected=document.getElementById("myDiv").getElementsByClassName("selected");
+    // console.log(selected)
+    console.log('--------------------')
+    // let targetClass="user";
+    // let classNames=div.className.split(/\s+/);// /s指的是空格
+    // let idx=classNames.indexOf(targetClass);
+    // if(idx>-1){
+    //     classNames.splice(i,1);
+    // }
+    // div.className=classNames.join(" ")
+    // let div=document.getElementsByTagName("div")[0]
+    // console.log(div)
+    // div.classList.remove("user")
+    // console.log(document.getElementById('001'))
+    // console.log(document.getElementsByClassName('user'));
+    // console.log(document.getElementsByTagName('div'))
+    // // console.log(document.querySelector('#001'))// 无效用法
+    // console.log(document.querySelector('.bd'))
+    console.log('-----------------------------')
+    // // console.log(document.characterSet)
+    // console.log(document.getElementById('content').innerHTML)
+    // let div=document.getElementById("content");
+    // div.outerHTML="<p>This is a paragraph.</p>"
+
+    // 作为前一个同胞节点插入
+    // div.insertAdjacentHTML("beforebegin", "<p>Hello world!</p>"); 
+    // div.insertAdjacentText("beforebegin", "Hello world!");
+
+    // 作为第一个子节点插入
+    // div.insertAdjacentHTML("afterbegin", "<p>Hello world!</p>"); 
+    // div.insertAdjacentText("afterbegin", "Hello world!");
+
+    // 作为最后一个子节点插入 
+    // div.insertAdjacentHTML("beforeend", "<p>Hello world!</p>"); 
+    // div.insertAdjacentText("beforeend", "Hello world!");
+
+    // 作为下一个同胞节点插入
+    // div.insertAdjacentHTML("afterend", "<p>Hello world!</p>"); 
+    // div.insertAdjacentText("afterend", "Hello world!");
+    console.log('---------------------------------')
+    // // 注意子节点和同胞节点的关系
+
+    // // 核心性能优化点 减少浏览器的渲染次数 减少操作html
+    // for (let value of values){ 
+    //     ul.innerHTML += '<li>${value}</li>'; // 别这样做！ 
+    // }
+    // // 可以利用一个中间变量参与循环将所有需要添加的html节点全部存入该中间变量后
+    // // 在赋值给innerHtml提升了性能
+    // let itemsHtml = ""; 
+    // for (let value of values){ 
+    //     itemsHtml += '<li>${value}</li>'; 
+    // }
+    // ul.innerHTML = itemsHtml;
+    // 一行代码解决 必须学会
+
+    // let ul=document.getElementById("inner")
+    // values=[1,2,3,4,5]
+    // map()方法是数组中的一个方法，通过某种数据结构格式来构造元素最后返回，形成一个新数组
+    // join()方法是数组中的一个方法，join()中的参数表示为使用某种符号来连接数组中的各个元素，形成字符串
+    // 以下方法可以用来改变数组形成新数组后，再形成新的字符串，数组到字符串的转换
+    // ul.innerHTML = values.map(value => `<li>${value}</li>`).join('');
+
+    // scrollIntoView() 使用效果解决
+
+    // 滚到到指定的id
+    function addHtml(){
+        for(let i=0;i<40;i++){
+            document.writeln('<p id="p' + i + '">' + i + '</p>')
+        }
+        // form.appendChild(fragment)
+    }
+    addHtml()
+    console.log(document.forms[0])
+    function goto(n){
+        let el= document.getElementById('p'+n)
+        if(el){
+            //scrollIntoView()方法存在于所有HTML元素上，可以滚动浏览器窗口 或容器元素以便包含元素进入视口
+            el.scrollIntoView({behavior: 'smooth', block: 'start'})
+       }
+    }
+    setTimeout(() => {
+        document.getElementById('p39').scrollIntoViewIfNeeded() // 让p39这个item视口可见
+    }, 2000);
+    // // document.forms[0].scrollIntoView();
+    // // document.forms[0].scrollIntoView({behavior: 'smooth', block: 'start'});
+
+    // console.log(document.documentElement.contains(document.body))
+    console.log('--------------------------------')
+    // console.log(document.getElementById('content').innerText)
+    // let div=document.getElementById('content')
+    // let temp="<div>Hello & welcome, <b>\"reader\"!</b></div>"
+    // div.innerText = temp.innerText;
+    // let div=document.getElementById('content')
+    // div.outerText = "Hello world!";
+</script>
+</html>
