@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>event</title>
+</head>
+<body>
+    <!-- <input type="button" value="Click Me" onclick="console.log('Clicked')"/> -->
+    <!-- <input type="button" value="Click Me" onclick="showMessage()"/> -->
+    <!-- <input type="button" value="Click Me" onclick="console.log(event.type)"> -->
+    <!-- <form method="post"> 
+        <input type="text" name="username" value="Echo Username"> 
+        <input type="button" value="click" onclick="console.log(username.value)"> 
+    </form> -->
+    <button id="myBtn">Click Me</button>
+    <a id="myLink" href="www.baidu.com">11111</a>
+</body>
+<script>
+    // DOM0的事件处理程序
+    // function showMessage() { 
+    //     console.log("Hello world!"); 
+    // }
+    // let btn=document.getElementById("myBtn")
+    // btn.onclick=function(){
+    //     // console.log("Clicked")
+    //     console.log(this)// Dom节点
+    //     console.log(this.id)
+    // }
+    // btn.onclick=null; // 移除事件处理程序
+    console.log('-----------------')
+    
+    // DOM2事件处理程序
+    // addEventListener()和removeEventListener() 接收3各参数：事件名，事件处理函数，布尔值
+    // 布尔值的含义：true表示在捕获阶段调用事件处理程序，false（默认值）表示 在冒泡阶段调用事件处理程序
+    // let btn = document.getElementById("myBtn"); 
+    // btn.addEventListener("click", () => { 
+    //     console.log(this) //window
+    //     console.log(this.id); 
+    // }, true);
+    //通过addEventListener()添加的事件处理程序只能使 用removeEventListener()并传入与添加时同样的参数来移除。
+    //这意味着 使用addEventListener()添加的匿名函数无法移除，如下面的例子所示
+    // let btn = document.getElementById("myBtn"); 
+    // btn.addEventListener("click", () => { 
+    //     console.log(this.id); 
+    // }, false); // 其他代码 
+    // btn.removeEventListener("click", function() { // 没有效果！ 
+    //     console.log(this.id); 
+    // }, false);
+    // 要想去除指定的函数即事件处理 必须指明要去除的函数 可以如下操作
+    // let btn = document.getElementById("myBtn"); 
+    // let handler = function() { 
+    //     console.log(this.id); 
+    // };
+    // btn.addEventListener("click", handler, false); // 其他代码 
+    // btn.removeEventListener("click", handler, false); // 有效果！
+    // 大多数事件处理都是在冒泡阶段，这样浏览器跨兼容性更好
+
+    // 浏览器跨兼容的检测方式
+    // var EventUtil = { 
+    //     addHandler: function(element, type, handler) { 
+    //         if (element.addEventListener) { 
+    //             element.addEventListener(type, handler, false); 
+    //         } else if (element.attachEvent) { 
+    //             element.attachEvent("on" + type, handler); 
+    //         } else { 
+    //             element["on" + type] = handler; 
+    //         } 
+    //     },
+    //     removeHandler: function(element, type, handler) { 
+    //         if (element.removeEventListener) { 
+    //             element.removeEventListener(type, handler, false); 
+    //         } else if (element.detachEvent) { 
+    //             element.detachEvent("on" + type, handler); 
+    //         } else { 
+    //             element["on" + type] = null; 
+    //         } 
+    //     } 
+    // };
+    // let btn = document.getElementById("myBtn") 
+
+    // let handler = function() { 
+    //     console.log("Clicked"); 
+    // };
+    // EventUtil.addHandler(btn, "click", handler); 
+    // 其他代码 
+    // EventUtil.removeHandler(btn, "click", handler);
+    console.log('--------------------------------')
+    
+    // 事件对象
+    // let btn = document.getElementById("myBtn"); 
+    // let handler = function(event) { 
+    //     switch(event.type) { 
+    //         case "click": 
+    //             console.log("Clicked"); 
+    //             break; 
+    //         case "mouseover": 
+    //             event.target.style.backgroundColor = "red"; 
+    //             break; 
+    //         case "mouseout": 
+    //             event.target.style.backgroundColor = ""; 
+    //             break; 
+    //         } 
+    //     };
+    // btn.onclick = handler; 
+    // btn.onmouseover = handler; 
+    // btn.onmouseout = handler;
+
+    // preventDefault()方法用于阻止特定事件的默认动作
+    // let link = document.getElementById("myLink"); 
+    // link.onclick = function(event) { 
+    //     event.preventDefault();
+    //     console.log('阻止') 
+    // };
+    // var btn = document.getElementById("myBtn"); 
+    // btn.onclick = function() { 
+    //     console.log("Clicked"); 
+    //     window.event.cancelBubble = true; //阻止事件冒泡到body标签上
+    //     };
+    // document.body.onclick = function() { 
+    //     console.log("Body clicked"); 
+    // };
+
+    // 跨浏览器兼容检测方式进一步扩展
+    var EventUtil = { 
+        addHandler: function(element, type, handler) { 
+            if (element.addEventListener) { 
+                element.addEventListener(type, handler, false); 
+            } else if (element.attachEvent) { 
+                element.attachEvent("on" + type, handler); 
+            } else { 
+                element["on" + type] = handler; 
+            } 
+        },
+        removeHandler: function(element, type, handler) { 
+            if (element.removeEventListener) { 
+                element.removeEventListener(type, handler, false); 
+            } else if (element.detachEvent) { 
+                element.detachEvent("on" + type, handler); 
+            } else { 
+                element["on" + type] = null; 
+            } 
+        },
+        getEvent: function(event) { 
+            return event ? event : window.event; 
+        },
+        getTarget: function(event) { 
+            return event.target || event.srcElement; 
+        },
+        preventDefault: function(event) { 
+            if (event.preventDefault) { 
+                event.preventDefault(); 
+            } else { 
+                event.returnValue = false; 
+            } 
+        },
+        stopPropagation: function(event) { 
+            if (event.stopPropagation) { 
+                event.stopPropagation(); 
+            } else { 
+                event.cancelBubble = true; 
+            } 
+        }
+    };
+    let btn = document.getElementById("myBtn");
+    btn.onclick = function(event) { 
+        event = EventUtil.getEvent(event); 
+    };
+    btn.onclick = function(event) { 
+        event = EventUtil.getEvent(event); 
+        let target = EventUtil.getTarget(event); 
+    };
+    let link = document.getElementById("myLink"); 
+    link.onclick = function(event) { 
+        event = EventUtil.getEvent(event); 
+        EventUtil.preventDefault(event);
+        EventUtil.stopPropagation(event) 
+    }; 
+    btn.onclick = function(event) { 
+        console.log("Clicked"); 
+        event = EventUtil.getEvent(event); 
+        EventUtil.stopPropagation(event); 
+    };
+    document.body.onclick = function(event) { 
+        console.log("Body clicked"); 
+    };
+
+    // 事件类型
+</script>
+
+</html>
