@@ -14,8 +14,21 @@
         <input type="text" name="username" value="Echo Username"> 
         <input type="button" value="click" onclick="console.log(username.value)"> 
     </form> -->
-    <button id="myBtn">Click Me</button>
-    <a id="myLink" href="www.baidu.com">11111</a>
+    <!-- <button id="myBtn">Click Me</button>
+    <a id="myLink" href="www.baidu.com">11111</a> -->
+    <!-- load事件加载最好使用javaScript -->
+    <!-- <div id="myDiv">111</div> -->
+    <!-- <div id="myDiv" style="background-color:red;height:100px;width:100px;"></div> -->
+    <!-- <input id="myText" value=""> -->
+    <!-- <ul id="myLinks"> 
+        <li id="goSomewhere">Go somewhere</li> 
+        <li id="doSomething">Do something</li> 
+        <li id="sayHi">Say hi</li> 
+    </ul> -->
+    <div id="myDiv"> 
+        <input type="button" value="Click Me" id="myBtn"> 
+    </div>
+    <input>
 </body>
 <script>
     // DOM0的事件处理程序
@@ -121,72 +134,237 @@
     // document.body.onclick = function() { 
     //     console.log("Body clicked"); 
     // };
+    console.log('-----------------------------')
 
     // 跨浏览器兼容检测方式进一步扩展
-    var EventUtil = { 
-        addHandler: function(element, type, handler) { 
-            if (element.addEventListener) { 
-                element.addEventListener(type, handler, false); 
-            } else if (element.attachEvent) { 
-                element.attachEvent("on" + type, handler); 
-            } else { 
-                element["on" + type] = handler; 
-            } 
-        },
-        removeHandler: function(element, type, handler) { 
-            if (element.removeEventListener) { 
-                element.removeEventListener(type, handler, false); 
-            } else if (element.detachEvent) { 
-                element.detachEvent("on" + type, handler); 
-            } else { 
-                element["on" + type] = null; 
-            } 
-        },
-        getEvent: function(event) { 
-            return event ? event : window.event; 
-        },
-        getTarget: function(event) { 
-            return event.target || event.srcElement; 
-        },
-        preventDefault: function(event) { 
-            if (event.preventDefault) { 
-                event.preventDefault(); 
-            } else { 
-                event.returnValue = false; 
-            } 
-        },
-        stopPropagation: function(event) { 
-            if (event.stopPropagation) { 
-                event.stopPropagation(); 
-            } else { 
-                event.cancelBubble = true; 
-            } 
-        }
-    };
-    let btn = document.getElementById("myBtn");
-    btn.onclick = function(event) { 
-        event = EventUtil.getEvent(event); 
-    };
-    btn.onclick = function(event) { 
-        event = EventUtil.getEvent(event); 
-        let target = EventUtil.getTarget(event); 
-    };
-    let link = document.getElementById("myLink"); 
-    link.onclick = function(event) { 
-        event = EventUtil.getEvent(event); 
-        EventUtil.preventDefault(event);
-        EventUtil.stopPropagation(event) 
-    }; 
-    btn.onclick = function(event) { 
-        console.log("Clicked"); 
-        event = EventUtil.getEvent(event); 
-        EventUtil.stopPropagation(event); 
-    };
-    document.body.onclick = function(event) { 
-        console.log("Body clicked"); 
-    };
+    // var EventUtil = { 
+    //     addHandler: function(element, type, handler) { 
+    //         if (element.addEventListener) { 
+    //             element.addEventListener(type, handler, false); 
+    //         } else if (element.attachEvent) { 
+    //             element.attachEvent("on" + type, handler); 
+    //         } else { 
+    //             element["on" + type] = handler; 
+    //         } 
+    //     },
+    //     removeHandler: function(element, type, handler) { 
+    //         if (element.removeEventListener) { 
+    //             element.removeEventListener(type, handler, false); 
+    //         } else if (element.detachEvent) { 
+    //             element.detachEvent("on" + type, handler); 
+    //         } else { 
+    //             element["on" + type] = null; 
+    //         } 
+    //     },
+    //     getEvent: function(event) { 
+    //         return event ? event : window.event; 
+    //     },
+    //     getTarget: function(event) { 
+    //         return event.target || event.srcElement; 
+    //     },
+    //     preventDefault: function(event) { 
+    //         if (event.preventDefault) { 
+    //             event.preventDefault(); 
+    //         } else { 
+    //             event.returnValue = false; 
+    //         } 
+    //     },
+    //     stopPropagation: function(event) { 
+    //         if (event.stopPropagation) { 
+    //             event.stopPropagation(); 
+    //         } else { 
+    //             event.cancelBubble = true; 
+    //         } 
+    //     }
+    // };
+    // let btn = document.getElementById("myBtn");
+    // btn.onclick = function(event) { 
+    //     event = EventUtil.getEvent(event); 
+    // };
+    // btn.onclick = function(event) { 
+    //     event = EventUtil.getEvent(event); 
+    //     let target = EventUtil.getTarget(event); 
+    // };
+    // let link = document.getElementById("myLink"); 
+    // link.onclick = function(event) { 
+    //     event = EventUtil.getEvent(event); 
+    //     EventUtil.preventDefault(event);
+    //     EventUtil.stopPropagation(event) 
+    // }; 
+    // btn.onclick = function(event) { 
+    //     console.log("Clicked"); 
+    //     event = EventUtil.getEvent(event); 
+    //     EventUtil.stopPropagation(event); 
+    // };
+    // document.body.onclick = function(event) { 
+    //     console.log("Body clicked"); 
+    // };
+    console.log('-----------------------------------------')
 
     // 事件类型
+    // load时间是最常用的事件
+    // window.addEventListener("load",(event)=>{
+    //     console.log("Loaded!")
+    // })
+    // let image=document.getElementById("myImage")
+    // image.addEventListener("load",(event)=>{
+    //     console.log(event.target.src)
+    // })
+    // window.addEventListener("load", () => {
+    //     let image = document.createElement("img"); 
+    //     image.addEventListener("load", (event) => { 
+    //         console.log(event.target.src); }); 
+    //         document.body.appendChild(image); 
+    //         image.src = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.huabanimg.com%2F8f90350da3394d42b7aff1ffd4fc99eec3bd3fbb1739c0-JeYptm_fw658&refer=http%3A%2F%2Fhbimg.huabanimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1661784042&t=7cd06ee36ea37cf6f8a9f28816314664";
+    //     }
+    // )
+    // unload时间 页面卸载时间
+    // resized事件是，当窗口被缩放到新高度或宽度时，会触发resize事件
+    // window.addEventListener("resize",(event)=>{
+    //     console.log("Resized")
+    // })
+    // scroll事件
+    // for(let i=0;i<50;i++){
+    //     document.writeln('<p id="p' + i + '">' + i + '</p>')
+    // }
+    // document.writeln('<div id="myDiv">111</div>')
+    // // window.addEventListener("scroll",(event)=>{
+    // //     if(document.compatMode=="CSS1Compat"){
+    // //         console.log(document.documentElement.scrollTop);
+    // //     }else{
+    // //         console.log(document.body.scrollTop)
+    // //     }
+    // // })
+    // // 鼠标一共有9种事件，处理mouseenter和mouseout其他都会触发冒泡事件
+    // // 客户端坐标 反应的是鼠标光标到客户端视口的距离
+    // let div=document.getElementById("myDiv");
+    // div.addEventListener("click",(event)=>{
+    //     console.log(`Client coordinates:${event.clientX},${event.clientY}`)
+    // })
+    // // 页面坐标 反应的是鼠标光标到页面的距离
+    // let div1=document.getElementById("myDiv")
+    // div1.addEventListener("click",(event)=>{
+    //     console.log(`Page coordinates: ${event.pageX},${event.pageY}`)
+    // })
+    // // 单页面没有滚动的时候 clientX与pageX的值是一样的，滚动之后页面值不同
+    // // 因为pageX or pageY反应了该点到页面顶部或左侧的大小，而clientX or clientY反应的是该点到客户端顶部或左侧的大小
+    // let div2=document.getElementById("myDiv")
+    // div2.addEventListener("click",(event)=>{
+    //     console.log(`Screen coordinates:${event.screenX},${event.screenY}`)
+    // })
+    // let div3=document.getElementById("myDiv");
+    // div.addEventListener("click",(event)=>{
+    //     let keys=new Array();
+    //     if (event.shiftKey) { 
+    //         keys.push("shift"); 
+    //     }
+    //     if (event.ctrlKey) { 
+    //         keys.push("ctrl"); 
+    //     }
+    //     if (event.altKey) { 
+    //         keys.push("alt"); 
+    //     }
+    //     if (event.metaKey) { 
+    //         keys.push("meta"); 
+    //     }
+    //     console.log("Keys: " + keys.join(","));
+    // })
+    console.log('----------------------------------')
+    // var EventUtil = { 
+    //     // 其他代码 
+    //     getRelatedTarget: function(event) { 
+    //         if (event.relatedTarget) { 
+    //             return event.relatedTarget; 
+    //         } else 
+    //         if (event.toElement) { 
+    //             return event.toElement; 
+    //         } else 
+    //         if (event.fromElement) { 
+    //             return event.fromElement; 
+    //         } 
+    //         else { 
+    //             return null; } 
+    //         },
+    //         // 其他代码 
+    //     };
+    //     let div = document.getElementById("myDiv"); 
+    //     div.addEventListener("mouseout", (event) => { 
+    //         let target = event.target; 
+    //         let relatedTarget = EventUtil.getRelatedTarget(event); 
+    //         console.log( `Moused out of ${target.tagName} to ${relatedTarget.tagName}`); 
+    //     });
+    //     // DOM为这个button属性定义了3个值：0表示鼠标主 键、1表示鼠标中键（通常也是滚轮键）、2表示鼠标副键
+    //     // mousewheel事件 鼠标滚轮 以120px为一个滚动单位 chrome是150
+    //     document.addEventListener("mousewheel", (event) => { 
+    //         console.log(event.wheelDelta); 
+    //         }
+    //     );
+    // console.log('-------------------------------------')
+    // var EventUtil = { 
+    //     // 其他代码 
+    //     getCharCode: function(event) { 
+    //         if (typeof event.charCode == "number") { 
+    //             return event.charCode; 
+    //         } else { 
+    //             return event.keyCode; 
+    //         } 
+    //     },// 其他代码 
+    // };
+    // let textbox = document.getElementById("myText"); 
+    // // textbox.addEventListener("keypress", (event) => { 
+    // //     console.log(EventUtil.getCharCode(event));
+    // //     if (event.getModifierState) { 
+    // //         console.log(event.getModifierState("Shift")); 
+    // //     } 
+    // // });
+    // textbox.addEventListener("compositionstart", (event) => { 
+    //     console.log(event.data); 
+    // }); 
+    // textbox.addEventListener("compositionupdate", (event) => { 
+    //     console.log(event.data); 
+    // }); 
+    // textbox.addEventListener("compositionend", (event) => { 
+    //     console.log(event.data);     
+    // });
+    console.log('-----------------------------')
+    // let list = document.getElementById("myLinks"); 
+    // list.addEventListener("click", (event) => { 
+    //     let target = event.target; 
+    //     switch(target.id) { 
+    //         case "doSomething": 
+    //            document.title = "I changed the document's title"; 
+    //            break; 
+    //         case "goSomewhere": 
+    //            location.href = "http:// www.wrox.com"; 
+    //            break; 
+    //         case "sayHi": 
+    //            console.log("hi"); 
+    //            break; 
+    //         } 
+    //     });
+    // 为了提高浏览器的性能 可以在执行完某一事件后，删除该事件
+    // let btn = document.getElementById("myBtn"); 
+    // btn.onclick = function() { 
+    //     // 执行操作 
+    //     btn.onclick = null; // 删除事件处理程序 
+    //     document.getElementById("myDiv").innerHTML = "Processing..."; 
+    // };
+    // let btn = document.getElementById("myBtn");
+    // // 创建event对象 
+    // let event = document.createEvent("MouseEvents");
+    // // 初始化event对象
+    // event.initMouseEvent("click", true, true, document.defaultView, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    // // 触发事件 
+    // btn.dispatchEvent(event);
+    let event = document.createEvent("HTMLEvents"); 
+    event.initEvent("focus", true, false); 
+    target.dispatchEvent(event);
 </script>
-
+<style>
+    /* #myDiv{
+        width:100%;
+        height:100%;
+        background-color: pink;
+    } */
+</style>
 </html>
