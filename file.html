@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <input type="file" id="files-list">
+    <div id="output"></div>
+    <div id="progress"></div> -->
+    <div class="box" id="droptarget">拖拽外部文件至此</div>
+    <div id="output"></div>
+</body>
+<script>
+    // let filesList = document.getElementById("files-list"); 
+    // filesList.addEventListener("change", (event) => { 
+    //     let files = event.target.files, 
+    //         i = 0, 
+    //         len = files.length; 
+    //     while (i < len) { 
+    //         const f = files[i]; 
+    //         console.log(`${f.name} (${f.type}, ${f.size} bytes)`); 
+    //         i++; 
+    //         } 
+    //     });
+    // let filesList = document.getElementById("files-list");
+    // filesList.addEventListener("change", (event) => {
+    //     let info = "", 
+    //         output = document.getElementById("output"), 
+    //         progress = document.getElementById("progress"),
+    //         files = event.target.files, type = "default", 
+    //         reader = new FileReader();
+    //     if (/image/.test(files[0].type)) { 
+    //         reader.readAsDataURL(files[0]); 
+    //         type = "image"; 
+    //     } else { 
+    //         reader.readAsText(files[0]); 
+    //         type = "text"; 
+    //     }
+    //     reader.onerror = function() { 
+    //         output.innerHTML = "Could not read file, error code is " + reader.error.code; 
+    //     };
+    //     reader.onprogress = function(event) { 
+    //         if (event.lengthComputable) { 
+    //             progress.innerHTML = `${event.loaded}/${event.total}`; 
+    //         } 
+    //     };
+    //     reader.onload = function() { 
+    //         let html = ""; 
+    //         switch(type) { 
+    //             case "image": 
+    //                html = `<img src="${reader.result}">`;
+    //                break; 
+    //             case "text": 
+    //                html = reader.result; 
+    //                break; 
+    //             }
+    //         output.innerHTML = html; 
+    //     };
+    // })
+    console.log('------------------------------------')
+    window.onload = function () {
+            var div1 = document.getElementById("droptarget");
+            //拖拽进入
+            div1.addEventListener("dragenter", function () {
+                div1.innerHTML = "请松手" ;
+            }, false);
+            //拖拽离开
+            div1.addEventListener("dragleave", function () {
+                div1.innerHTML = "拖到这里上传" ;
+            }, false);
+            //悬停
+            div1.addEventListener("dragover", function (ev) {
+                ev.preventDefault();//取消事件的默认动作，防止浏览器打开文件
+            }, false);
+            //松手
+            div1.addEventListener("drop", function (ev) {
+                ev.preventDefault();//取消事件的默认动作。
+                let fileReader = new FileReader() ;
+                let file = ev.dataTransfer.files[0] ;
+                fileReader.onload = function(){
+                    alert("成功"+this.result);
+                }
+                fileReader.onerror = function(){
+                    alert("读取失败");
+                }
+                fileReader.readAsText(file) ;
+            }, false);
+
+        }
+</script>
+<style>
+    .box {
+            width: 400px;
+            height: 400px;
+            border: 1px solid #000;
+            margin: 100px auto;
+            box-shadow: 0 0 10px 5px rgba(0,0,0,.8);
+            border-radius: 10px;
+            line-height: 400px;
+            text-align: center;
+            font-size: 30px;
+            font-weight: 700;
+            text-shadow:0 0 5px;
+            transition:all 1s;
+        }
+</style>
+</html>
