@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // let book={
+    //     title: 'professional JavaScript',
+    //     authors: ["Nicholas C. Zakas", "Matt Frisbie"],
+    //     edition: 4,
+    //     year: 2017,
+    //     toJSON: function(){
+    //         return this.title
+    //     }
+    // }
+    // let jsonText=JSON.stringify(book)
+    // console.log(jsonText)// 把一个javaScript对象序列化一个Json字符串
+    // // 使用JSON.parse()可以获得与book相类似的对象
+    // let bookCopy=JSON.parse(jsonText);
+    // console.log(bookCopy)
+    // console.log(JSON.stringify(book,["title","edition"])) // 让book对象中的title和edition属性序列化一个JSON字符串
+    // let jsonText1 = JSON.stringify(book, (key, value) => { 
+    //     switch(key) { 
+    //         case "authors": return value.join(",") 
+    //         case "year": return 5000; 
+    //         case "edition": return undefined; 
+    //         default: return value; 
+    //     } 
+    // });
+    // console.log(jsonText1)
+    // let jsonText2 = JSON.stringify(book, null, 4); //缩进4格
+    // console.log(jsonText2)
+    // let jsonText3 = JSON.stringify(book, null, "--" );
+    // console.log(jsonText3)//会显示缩进
+    console.log('---------------------------------')
+    let book={
+        title: 'professional JavaScript',
+        authors: ["Nicholas C. Zakas", "Matt Frisbie"],
+        edition: 4,
+        year: 2017,
+        releaseDate: new Date(2017, 11, 1)
+    }
+    let jsonText = JSON.stringify(book); 
+    let bookCopy = JSON.parse(jsonText, (key, value) => key == "releaseDate" ? new Date(value) : value); 
+    console.log(bookCopy.releaseDate.getFullYear());
+</script>
+</html>
