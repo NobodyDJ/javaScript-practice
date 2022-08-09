@@ -43,13 +43,130 @@
 // let [x,y,z]=new Set(['a','b','c'])
 // console.log(x,y,z)
 
-function* fibs(){
-    let a=0;
-    let b=1;
-    while(true){
-        yield a;//0,1,1,2,3,5
-        [a,b]=[b,a+b]
-    }
+// function* fibs(){
+//     let a=0;
+//     let b=1;
+//     while(true){
+//         yield a;//0,1,1,2,3,5
+//         [a,b]=[b,a+b]
+//     }
+// }
+// let [first, second, third, fourth, fifth, sixth] = fibs();
+// console.log(first, second, third, fourth, fifth, sixth)
+
+//(1).如果要将一个已经声明的变量用于解构赋值，必须非常小心。
+// let x;
+// { x } = { x: 1 }; //报错
+
+// 正确的写法
+// let x;
+// ({ x } = { x: 1 });
+
+//(2).解构赋值允许等号左边的模式之中，不放置任何变量名。
+({} = [true, false]);
+({} = 'abc');
+({} = []);
+
+//(3).数组本质是特殊的对象，因此可以对数组进行对象属性的解构
+let arr = [1, 2, 3];
+// 这里的方括号属于对象的扩展中的属性名表达式，相当于可以用表达式来表示属性
+let {0 : first, [arr.length - 1] : last} = arr;
+first // 1
+last // 3
+console.log(first)
+
+console.log('-----------------------------------')
+// 2.3字符串的结构赋值
+// 字符串也可以结构赋值。此时，字符串可以转换为一个类似数组的对象
+const [a, b, c, d, e] = 'hello';
+a // "h"
+b // "e"
+c // "l"
+d // "l"
+e // "o"
+
+
+let {length : len} = 'hello';
+len // 5
+console.log(len)
+console.log('---------------------------')
+
+// 4.数值和布尔值的解构赋值
+// let {toString: s} = 123;
+// s === Number.prototype.toString // true
+
+let {toString: s} = true;
+console.log(s === Boolean.prototype.toString) // true
+// 上面代码中，数值和布尔值的包装对象都有toString属性，因此变量s都能取到值。
+// undefined和null无法转为对象，对他们进行结构赋值，会报错
+// 使用解构赋值时，应该避免使用圆括号
+
+// 2.7 结构赋值的用途
+// 2.7.1交换变量的值
+let x = 1;
+let y = 2;
+
+[x, y] = [y, x];
+
+// 2.7.2从函数返回多个值
+
+// function example() {
+//     return [1, 2, 3];
+//   }
+//   let [a, b, c] = example();
+  
+//   // 返回一个对象
+  
+//   function example() {
+//     return {
+//       foo: 1,
+//       bar: 2
+//     };
+//   }
+//   let { foo, bar } = example();
+
+// 2.7.3 函数参数的定义
+// 参数是一组有次序的值
+// function f([x, y, z]) { ... }
+// f([1, 2, 3]);
+
+// // 参数是一组无次序的值
+// function f({x, y, z}) { ... }
+// f({z: 3, y: 2, x: 1});
+
+// 2.7.4 提取 JSON 数据 强烈推荐
+let jsonData = {
+    id: 42,
+    status: "OK",
+    data: [867, 5309]
+};
+
+let { id, status, data: number } = jsonData;
+
+console.log(id, status, number);
+
+// 2.7.5 函数参数的默认值
+// jQuery.ajax = function (url, {
+//     async = true,
+//     beforeSend = function () {},
+//     cache = true,
+//     complete = function () {},
+//     crossDomain = false,
+//     global = true,
+//     // ... more config
+//   } = {}) {
+//     // ... do stuff
+// };
+
+// 2.7.6 遍历Map结构
+const map = new Map();
+map.set('first', 'hello');
+map.set('second', 'world');
+
+for (let [key, value] of map) {
+  console.log(key + " is " + value);
 }
-let [first, second, third, fourth, fifth, sixth] = fibs();
-console.log(first, second, third, fourth, fifth, sixth)
+
+// 2.7.7 输入模块的指定方法
+// 获取拿到指定的方法
+// const { SourceMapConsumer, SourceNode } = require("source-map");
