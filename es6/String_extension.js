@@ -67,3 +67,85 @@ function fn(){
     return "Hello World"
 }
 console.log(`foo ${fn()} bar`)
+
+console.log(`Hello ${'World'}`)
+let b =[{first:1,last:2}]
+const tmpl = addrs => `<table>${addrs.map(
+    addr => `<tr><td>${addr.first}</td></tr>
+            <tr><td>${addr.last}</td></tr>`).join('')}</table>`;
+console.log(tmpl(b))
+
+// 3.6实例：模板编译 好复杂
+let template = `
+<ul>
+  <% for(let i=0; i < data.supplies.length; i++) { %>
+    <li><%= data.supplies[i] %></li>
+  <% } %>
+</ul>
+`;
+
+// 3.7 标签模板
+// 标签模板其实不是模板，而是函数调用的一种特殊形式
+// alert`hello`
+// function alert(x) {
+//     console.log(x)
+// }
+// alert`hello`
+// 上下等价
+// alert(['hello'])
+
+let total = 30;
+let msg = passthru`The total is ${total} (${total*1.05} with tax)`;
+
+// 这里是literals是字符串 ${}表达式座位分隔作为另一个参数
+function passthru(literals) {
+  let result = '';
+    let i = 0;
+    console.log(literals)
+    console.log(arguments)
+  while (i < literals.length) {
+    result += literals[i++];
+    if (i < arguments.length) {
+      result += arguments[i];
+    }
+  }
+
+  return result;
+}
+
+console.log(msg) // "The total is 30 (31.5 with tax)"
+
+let sender='123<<>>'
+let message =
+  SaferHTML`<p>${sender} has sent you a message.</p>`;
+
+function SaferHTML(templateData) {
+    console.log(templateData)
+    console.log(arguments)
+  let s = templateData[0];
+  for (let i = 1; i < arguments.length; i++) {
+    let arg = String(arguments[i]);
+
+    // Escape special characters in the substitution.
+    s += arg.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+    // Don't escape special characters in the template.
+    s += templateData[i];
+  }
+  return s;
+}
+console.log(message)
+
+// 8.模板字符串的限制 就是隐私政策模板这里\u \l这里 javaScript引擎把它们给转义了 导致隐私政策模板转义错误
+// function latex(strings) {
+//     // ...
+//   }
+  
+//   let document = latex`
+//   \newcommand{\fun}{\textbf{Fun!}}  // 正常工作
+//   \newcommand{\unicode}{\textbf{Unicode!}} // 报错
+//   \newcommand{\xerxes}{\textbf{King!}} // 报错
+  
+//   Breve over the h goes \u{h}ere` // 报错
