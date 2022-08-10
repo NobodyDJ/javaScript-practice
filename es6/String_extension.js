@@ -34,9 +34,36 @@ console.log(JSON.parse(json))// 空
 const PS = eval("'\u{2029}'");
 console.log(PS)// 空
 console.log('-------------------------------')
+
 // 3.4 JSON.stringify()的改造
 // JSON 数据必须是 UTF-8 编码，但是JSON.stringify()方法可能会返回不符合UTF-8标准的字符串
 // ES2019胡改变JSON.stringify()的行为。如果0xD800到0xDFFF之间的单个，或者存在不配对的形式，会返回转移字符串
 // 下一步自己处理
 JSON.stringify('\u{D834}') // ""\\uD834""
 JSON.stringify('\uDF06\uD834') // ""\\udf06\\ud834""
+
+//3.5 模板字符串
+// 模板字符串是增加版的字符串，用反引号(`)表示。
+// 它可以当作普通字符串使用，也可以用来定义多行字符串，或者在字符串中嵌入变量
+console.log(`In JavaScript '\n' is a line-feed`)
+console.log(`In JavaScript this is 
+not legal`)
+// 在字符串中嵌入变量
+let name= "Bob",time="today"
+console.log(`              Hello ${name},how are you ${time}?`)
+
+//如果压在模板字符串中引用反引号，需要加上转义符\
+console.log(`\`YO\` World!`)
+
+// 在模板字符串中，所有的空格和换行都会被保留，可以使用trim()方法消除它
+let a=`            In JavaScript this is not legal   `
+console.log(a.trim())
+// 大括号内部可以放入任意的JavaScript表达式，可以就行运算，以及引用对象属性
+let x=1
+    y=2
+console.log(`${x}+${y}=${x+y}`)
+
+function fn(){
+    return "Hello World"
+}
+console.log(`foo ${fn()} bar`)
