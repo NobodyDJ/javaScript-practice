@@ -57,3 +57,76 @@ function is32Bit(c) {
   
 console.log(is32Bit("𠮷")) // true
 console.log(is32Bit("a")) // false
+
+// 4.4 实例方法normalize()
+// es6提供字符串实例的normalize()方法，用来将字符的不同表示方法同一为同样的形式
+// 以上方法称为Unicode正规化
+console.log('\u01D1'.normalize() === '\u004F\u030C'.normalize())
+
+// 4.5实例方法：includes(),startsWith(),endsWith
+// 传统上,JavaScript只有indexOf方法，用来确定一个字符串是否包含在另一个字符串中。
+// es6现在又提供了三种新方法
+// includes():返回布尔值，表示是否找到了参数字符串
+// startWith():返回布尔值，表示参数字符串是否在原字符串的头部
+// endsWith():返回布尔值，表示参数字符串是否在原字符串的尾部
+
+let t = 'Hello world!'
+console.log(t.startsWith('Hello'))// true
+console.log(t.endsWith('!'))// true
+console.log(t.includes('o'))// true
+
+// 4.6实例方法：repeat()
+// repeat方法返回一个新字符串，表示将原字符串重复n次
+console.log('x'.repeat(3))
+console.log('hello'.repeat(2))
+// 如果是小数，则会取整数抹去小数部分
+console.log('na'.repeat(2.9))
+// 如果参数为负数，那么会报错
+// repeat的参数如果是字符串则会先转换为数字
+
+//4.7 实例方法：padStart(),padEnd()
+// ES2017引入了字符串的不全长度的功能。如果某个字符串不够指定长度，会在头部或尾部进行补全
+// padStart()用于头部补全，padEnd()用于尾部补全
+// 以上两个方法一共接收两个参数，一个补全生效的最大长度，第二个参数时用来补全的字符串
+console.log('x'.padStart(5, 'ab'))
+console.log('x'.padStart(4, 'ab'))
+console.log('x'.padEnd(5, 'ab'))
+// 如果用来补全的字符串与原字符串，两者的长度之和超过了最大长度，则会截去超出位数的补全字符串
+console.log('abc'.padStart(10, '0123456789'))
+// 如果省略第二个阐述，默认使用空格补全长度。
+// padStart()的常见用途是为了数值补全指定位数。下面代码生成10位的数值字符串
+'1'.padStart(10, '0') // "0000000001"
+'12'.padStart(10, '0') // "0000000012"
+'123456'.padStart(10, '0') // "0000123456"
+// 另一个用途是提示字符串格式
+console.log('12'.padStart(10, 'YYYY-MM-DD')) // "YYYY-MM-12"
+console.log('09-12'.padStart(10, 'YYYY-MM-DD')) // "YYYY-09-12"
+
+// 4.8 实例方法：trimStart().trimEnd()
+// es2019对字符串新增了trimStart()和trimEnd()这两个方法，他们的行为与trim()相同
+
+// 4.9实例方法：matchAll()方法返回一个正则表达式在当前字符串的所有匹配
+
+// 4.10实例方法：replaceAll()
+// 历史上，字符串的实例方法replace()只能替换第一个匹配。
+console.log('aabbcc'.replace('b', '_'))
+// 这样不得不引入正则表达式来替换，但是es6引入了replaceAll()方法，可以替换所有匹配
+// let c='aabbcc'
+// console.log(c.replaceAll('b', '_')) //replaceAll()方法对版本有限制，这个方法比较新
+// 'aabbcc'.replace(/b/g, '_')
+
+// const str = '123abc456';
+// const regex = /(\d+)([a-z]+)(\d+)/g;
+
+// function replacer(match, p1, p2, p3, offset, string) {
+//   return [p1, p2, p3].join(' - ');
+// }
+
+// console.log(str.replaceAll(regex, replacer))
+
+// 4.11.实例方法：at()
+// at()方法可以接受一个整数作位参数，返回参数指定该位置的字符，支持负索引从后往前倒数
+// 还是node.js版本的原因
+const str = 'hello'
+console.log(str.at(1))
+console.log(str.at(-1))
