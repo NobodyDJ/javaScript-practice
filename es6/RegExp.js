@@ -36,7 +36,65 @@ console.log(/^.$/u.test(s)) // true
 // 4.3.2 Unicode字符表示法
 // ES6 新增了使用大括号表示 Unicode 字符
 // 这种表示法在正则表达式中必须加上u修饰符，才能识别当中的大括号，否则会被解读为量词。
-console.log(/\u{61}/.test('a')) // false
-/\u{61}/u.test('a') // true
-/\u{20BB7}/u.test('𠮷') // true
+// console.log(/\u{61}/.test('a')) // false
+// /\u{61}/u.test('a') // true
+// /\u{20BB7}/u.test('𠮷') // true
 // 上面代码表示，如果不加u修饰符，正则表达式无法识别\u{61}这种表示法，只会认为这匹配 61 个连续的u。
+
+// 4.3.3 量词
+// 使用u修饰符，所有量词都会正确识别大于0xFFFF的Unicode字符
+// /a{2}/.test('aa') // true
+// /a{2}/u.test('aa') // true
+// /𠮷{2}/.test('𠮷𠮷') // false
+// /𠮷{2}/u.test('𠮷𠮷') // true
+
+// 4.3.4 预定义模式
+// u修饰符也影响到预定义模式，能否正确识别码点大于0xFFFF的Unicode字符
+// /^\S$/.test('𠮷') // false
+// /^\S$ / u.test('𠮷') // true
+// 上面代码的\s是预定义模式，匹配所有非空白字符。只有加了u修饰符，它才能匹配码点大于0xFFFF的Unicode字符。
+function codePointLength(text) {
+    var result = text.match(/[\s\S]/gu);
+    return result ? result.length : 0;
+}
+
+var s = '𠮷𠮷';
+
+s.length // 4
+codePointLength(s) // 2
+console.log(codePointLength(s))
+
+// 4.3.5 修饰符
+// 有些Unicode字符的编码不同，但是字型相近，比如，\u0048与\u212A都是大写的K
+// /[a-z]/i.test('\u212A') // false
+// /[a-z]/iu.test('\u212A') // true
+
+//4.3.6转义
+// 没有u修饰符的情况下，正则中没有定义的转义，而在u模式会报错
+// /\,/ // /\,/
+// /\,/u // 报错
+// 上面代码中，没有u修饰符时，逗号前面的反斜杠是无效的，加了u修饰符就报错。
+
+// 4.4 RegExp.prototype.unicode属性
+// 正则实例对象新增unicode属性，表示是否设置了u修饰符
+// const r1 = /hello/;
+// const r2 = /hello/u;
+
+// r1.unicode // false
+// r2.unicode // true
+
+// 4.5 y修饰符 要用的时候再来看挺多的
+// 除了u修饰符，es6还未正则表达式添加了y修饰符，叫做"黏连"修饰符
+// y修饰符的作用与g修饰符类似，也是全局匹配,g是只要匹配到就行,而y是要从剩余第一个位置开始匹配
+// RegExp.prototype.exec()是在一个指定的字符串中执行一个搜索匹配。
+// 在设置了global或sticky标志位的情况下，js RegExp对象是有状态的。
+// 他们会将上次成功匹配后的位置记录在lastIndex属性中。使用此特性，exec()可用来对单个字符串中的多次匹配进行逐条的遍历。
+var s = 'aaa_aa_a';
+var r1 = /a+/g;
+var r2 = /a+/y;
+
+console.log(r1.exec(s)) // ["aaa"]
+console.log(r2.exec(s)) // ["aaa"]
+
+console.log(r1.exec(s)) // ["aa"]
+console.log(r2.exec(s)) // null
