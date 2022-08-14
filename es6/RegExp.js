@@ -98,3 +98,38 @@ console.log(r2.exec(s)) // ["aaa"]
 
 console.log(r1.exec(s)) // ["aa"]
 console.log(r2.exec(s)) // null
+
+// 4.6 RegExp.prototype.sticky属性
+// 与y 修饰符相匹配，检测是否使用了y修饰符
+
+// 4.7 RegExp.prototype.flags属性
+// es6 新增了flags属性，会返回正则表达式的修饰符
+// ES5 的 source 属性
+// 返回正则表达式的正文
+/abc/ig.source
+// "abc"
+
+// ES6 的 flags 属性
+// 返回正则表达式的修饰符
+/abc/ig.flags
+// 'gi'
+
+// 4.8 s修饰符:dotAll模式
+// 在正则表达式中，点(.)是一个特殊字符，代表任意的单个字符，但是有两个例外
+// 一个是四个字节的UTF-16字符，这个可以用u修饰符解决;另一个是行终止符；
+// 所谓行中止符，就是该字符表示一行的终结。以下四个字符属于“行终止符”
+// /foo.bar/.test('foo\nbar')
+// // false
+
+// /foo[^]bar/.test('foo\nbar')
+// // true
+
+// /foo.bar/s.test('foo\nbar') // true
+
+const re = /foo.bar/s;
+// 另一种写法
+// const re = new RegExp('foo.bar', 's');
+
+re.test('foo\nbar') // true
+re.dotAll // true
+re.flags // 's'
