@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iterator和for...of</title>
+</head>
+<body>
+    
+</body>
+<script>
+    var it = makeIterator(['a', 'b']);
+
+    console.log(it.next()) // { value: "a", done: false }
+    console.log(it.next());// { value: "b", done: false }
+    console.log(it.next());// { value: undefined, done: true }
+
+    function makeIterator(array) {
+    var nextIndex = 0;
+    return {
+        next: function() {
+            return nextIndex < array.length ?
+                {value: array[nextIndex++], done: false} :
+                {value: undefined, done: true};
+            }
+        };
+    }
+    const arr = ['red', 'green', 'blue'];
+
+    for(let v of arr) {
+    console.log(v); // red green blue
+    }
+
+    const obj = {};
+    obj[Symbol.iterator] = arr[Symbol.iterator].bind(arr);
+
+    for(let v of obj) {
+      console.log(v); // red green blue
+    }
+
+    var engines=new Set(["Gecko","Trident","Webkit","Webkit"])
+    for(var e of engines){
+        console.log(e)
+    }
+
+    var es6 =new Map();
+    es6.set("edition",6);
+    es6.set("committee","TC39")
+    es6.set("standard","ECMA-262");
+    for(var[name,value] of es6){
+        console.log(name+": "+value);
+    }
+    let map = new Map().set('a', 1).set('b', 2);
+    for (let pair of map) {
+    console.log(pair);
+    }
+    // ['a', 1]
+    // ['b', 2]
+
+    for (let [key, value] of map) {
+    console.log(key + ' : ' + value);
+    }
+    // a : 1
+    // b : 2
+    let obj1={
+        'a':1,
+        'b':2,
+        'c':3
+    }
+    for(let pair of Object.entries(obj1)){
+        console.log(pair)
+    }
+    let arrLike={length:2,0:'a',1:'b'}
+    // for(let x of arrLike){
+    //     console.log(x) //arrLike is not iterable 
+    // }
+    // 此时，可以使用Array.from()将其转换为数组
+    for (let x of Array.from(arrLike)) {
+        console.log(x);
+    }
+</script>
+</html>
