@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    class MyPromise{
+        constructor(executor){
+            console.log(executor)
+            // 初始化值
+            this.initValue()
+            // 初始化this执行
+            this.initBind()
+            // 执行传进来的函数，try/catch是对throw方法错误异常的处理
+            try{
+                executor(this.resolve, this.reject)
+            }catch(e){
+                this.reject(e)
+            }
+        }
+        initValue(){
+            this.PromiseResult = null;
+            this.PromiseState = 'pending';
+            this.onFulfilledCallbacks = [];// 保存成功的回调
+            this.onRejectedCallbacks = [];// 保存失败的回调
+        }
+        initBind(){
+            console.log(this)
+            this.resolve = this.resolve.bind(this)
+            this.reject = this.reject.bind(this)
+        }
+        resolve(value){
+            if(this.PromiseState!== 'pending') return
+            this.PromiseState = 'fulfilled';
+            this.PromiseResult = value;
+            this.onFulfilledCallbacks.forEach((fn)=>fn())
+            // while(this.onFulfilledCallbacks.length){
+            //     this.onFulfilledCallbacks.shift()(this.PromiseResult)
+            // }
+        }
+        reject(reason){
+            if(this.PromiseState!== 'pending') return
+            this.PromiseState = 'rejected'
+            this.PromiseResult = reason
+            this.onRejectedCallbacks.forEach((fn)=>fn())
+            // while(this.onRejectedCallbacks.length){
+            //     this.onRejectedCallbacks.shift()(this.PromiseResult)
+            // }
+        }
+        // 实现then方法
+        then(onFulfilled, onRejected){
+            // 分别给onFulfilled和onRejected方法进行初始化
+            // 然后根据Promise的状态执行对应的方法
+            onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val
+            onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+            // 返回Promise对象的操作 .then链式调用的核心
+            var thenPromise = new MyPromise((resolve, reject)=>{
+                if(this.PromiseState === 'fulfilled'){
+                    // 核心是判断是否为返回值是否为Promise，是那么要等待其完成，如果不是那么直接onFulfilled方法执行完，resolve直接结束
+                    // 为了防止thenPromise没有生成 要采用异步操作
+                    setTimeout(() => {
+                        try {
+                            let x = onFulfilled(this.PromiseResult)
+                            resolvePromise(x, resolve, reject, thenPromise)
+                        } catch (error) {
+                            reject(error)
+                        }
+                    }, 0);
+                }else if(this.PromiseState === 'rejected'){
+                    setTimeout(() => {
+                        try {
+                            let x = onRejected(this.PromiseResult)
+                            resolvePromise(x, resolve, reject, thenPromise)
+                        } catch (error) {
+                            reject(error)
+                        }
+                    }, 0);
+                }else if(this.PromiseState === 'pending'){
+                    // 这里是当Promise的状态为pending，将这些回调函数保存在数组中
+                    // 注意这里回调函数的指向，始终指向的是回调函数的执行者
+                    this.onFulfilledCallbacks.push(()=>{
+                        setTimeout(() => {
+                            try {
+                                let x = onFulfilled(this.PromiseResult)
+                                resolvePromise(x, resolve, reject, thenPromise)
+                            } catch (error) {
+                                reject(error)
+                            }
+                        }, 0);
+                    })// bind绑定保证了this始终指向then方法的调用者，保证值不丢失
+                    this.onRejectedCallbacks.push(()=>{
+                        setTimeout(() => {
+                            try {
+                                let x = onRejected(this.PromiseResult)
+                                resolvePromise(x, resolve, reject, thenPromise)
+                            } catch (error) {
+                                reject(error)
+                            }
+                        }, 0);
+                    })
+                }
+            })
+            // 返回一个包装的Promise
+            return thenPromise
+        }
+    }
+    // 处理返回的promise对象
+    function resolvePromise(x, resolve, reject, thenPromise){
+        if(x === thenPromise){
+            return reject(new TypeError('不可以返回本身！'))
+        }
+        // 防止多次调用
+        let called;
+        // x不是Null且x是对象或者函数
+        if(x !== null && (typeof x === 'object' || typeof x=== 'function')){
+            try {
+                // A+ 规定，声明then = x的then方法
+                let then = x.then
+                // 如果then是函数，就默认是promise了
+                if(typeof then === 'function'){
+                    // 就让then执行，第一个参数是this 后面是成功的回调和失败的回调
+                    then.call(x,y=>{
+                        // 失败和成功的回调只能调用一个
+                        if(called) return;
+                        called = true;
+                        // resolve出来的结果是Promise，那么继续解析
+                        resolvePromise(y, resolve, reject, thenPromise)
+                    },err=>{
+                        if(called) return;
+                        called = true;
+                        // 直接执行reject函数
+                        reject(err);
+                    })
+                }
+            } catch (error) {
+                // 也属于失败了
+                if(called) return;
+                called = true;
+                // 去then出错了那么就不要在继续执行了
+                reject(e)
+            }
+        }else{
+            resolve(x)
+        }
+    }
+    // resolve方法
+    MyPromise.resolve = function(val){
+        return new Promise((resolve, reject)=>{
+            resolve(val)
+        })
+    }
+    // reject方法
+    MyPromise.reject = function(val){
+        return new Promise((resolve, reject)=>{
+            reject(val)
+        })
+    }
+    // Promise.race方法 竞速原则
+    MyPromise.race = function(promises){
+        return new MyPromise((resolve,reject)=>{
+            for(let i=0;i<promises.length;i++){
+                promises[i].then(resolve,reject)
+            }
+        })
+    }
+    // Promise.all方法，等待原则，等到所有的Promises都满足了条件之后，拿到所有成功的结果
+    // 获取所有的Promise，执行then的结果
+    MyPromise.all=function(promises){
+        let arr=[] //用于保存所有的结果
+        let i = 0;//用于计数，保证i===promises.length时，退出循环
+        function processData(res,index,resolve){
+            arr[index]=res;
+            i++;
+            if(i===promises.length){
+                resolve(arr)
+            }
+        }
+        return new MyPromise((resolve,reject)=>{
+            for(let j=0;j<promises.length;j++){
+                promises[j].then((res)=>{
+                    processData(res,j,resolve)
+                },(reason)=>{
+                    reject(reason)
+                })
+                
+            }
+        })
+    }
+    MyPromise.resolve(200).then(data =>{
+        console.log(data)
+    })
+    MyPromise.reject(200).then(data =>{
+        console.log(data)
+    },
+    err=>{
+        console.log(err)
+    })
+    
+    const p1 = new MyPromise((resolve,reject)=>{
+        setTimeout(() => {
+            resolve(300)
+        }, 3000);
+    })
+    const p2 = new MyPromise((resolve,reject)=>{
+        setTimeout(() => {
+            resolve(200)
+        }, 2000);
+    })
+    const p3 = new MyPromise((resolve,reject)=>{
+        setTimeout(() => {
+            resolve(300)
+        }, 1000);
+    })
+    const p4 = new MyPromise((resolve,reject)=>{
+        setTimeout(() => {
+            reject(300)
+        }, 200);
+    })
+    MyPromise.race([p1,p2,p3]).then((val)=>{
+        console.log(val)
+    },(reason)=>{
+        console.log(reason)
+    })
+    MyPromise.all([p1,p2,p3]).then((arr)=>{
+        console.log(arr)
+    },(reason)=>{
+        console.log(new Error(reason))
+    })
+</script>
+</html>
