@@ -1,0 +1,37 @@
+<script>
+  function id2FamilyTree(id, menu, props = { id: 'id' }) {
+        
+        var temp = [id];
+        var parentId ='';
+        function findId(id,branch,parent=[]){
+          for(let item of branch){
+            if(item[props.id] == id){
+              parentId = parent[props.id];
+              if(parentId){
+                temp.unshift(parentId);
+              }
+              findId(parentId,menu);
+            }else if(item.children){
+              findId(id,item.children,item)
+            }
+          }
+        }
+        findId(id,menu);
+        return temp;// 返回所有的非叶子节点
+    }
+    
+    let id = 12;
+    let arr = [
+        { id: 1, name: '张三1',children:[{id:8,name:"张三8",children:[{id:12,name:"张三12"}]},{id:9,name:"张三9"}] },
+        { id: 2, name: '张三2',children:[{id:10,name:"张三10"},{id:11,name:"张三11"}] },
+        { id: 3, name: '张三3' },
+        { id: 4, name: '张三4' },
+        { id: 5, name: '张三5' },
+        { id: 6, name: '张三6' },
+        { id: 7, name: '张三7' },
+    ]
+    let b=id2FamilyTree(id, arr)
+    console.log(b);
+</script>
+
+    
