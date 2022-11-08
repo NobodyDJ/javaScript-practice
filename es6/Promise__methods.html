@@ -12,7 +12,6 @@
 <script>
     class MyPromise{
         constructor(executor){
-            console.log(executor)
             // 初始化值
             this.initValue()
             // 初始化this执行
@@ -31,7 +30,6 @@
             this.onRejectedCallbacks = [];// 保存失败的回调
         }
         initBind(){
-            console.log(this)
             this.resolve = this.resolve.bind(this)
             this.reject = this.reject.bind(this)
         }
@@ -178,6 +176,7 @@
             arr[index]=res;
             i++;
             if(i===promises.length){
+                // console.log('方法',resolve)
                 resolve(arr)
             }
         }
@@ -187,9 +186,53 @@
                     processData(res,j,resolve)
                 },(reason)=>{
                     reject(reason)
-                })
-                
+                })    
             }
+        })
+    }
+    // 返回所有Promise对象的状态和值
+    MyPromise.allSettled = function(promises){
+        return new MyPromise((resolve, reject)=>{
+            let arr = [];
+            let count = 0;
+            function processData(status,res,index){
+                arr[index] = {status,value:res};
+                count++;
+                if(count === promises.length){
+                    resolve(arr);
+                }
+            }
+            promises.forEach((item,index)=>{
+                if(item instanceof MyPromise){
+                    item.then(res=>{
+                        processData('fulfilled',res,index);
+                    },err=>{
+                        processData('rejected',err,index);
+                    })
+                }else{
+                    processData('fulfilled',item,index);
+                }
+            })
+        })
+    }
+    // 当所有promise对象都报错，那么抛出错误
+    MyPromise.any = function(promises){
+        return new MyPromise((resolve,reject)=>{
+            let count = 0;
+            promises.forEach((item)=>{
+                if(item instanceof MyPromise){
+                    item.then((res)=>{
+                        resolve(res)
+                    },(err)=>{
+                        count++;
+                        if(count === promises.length){
+                            reject('Promise都有问题')
+                        }
+                    })
+                }else{
+                    resolve(item)
+                }
+            })
         })
     }
     MyPromise.resolve(200).then(data =>{
@@ -222,6 +265,16 @@
             reject(300)
         }, 200);
     })
+    const p5 = new MyPromise((resolve,reject)=>{
+        setTimeout(() => {
+            reject(400)
+        }, 300);
+    })
+    const p6 = new MyPromise((resolve,reject)=>{
+        setTimeout(() => {
+            reject(500)
+        }, 400);
+    })
     MyPromise.race([p1,p2,p3]).then((val)=>{
         console.log(val)
     },(reason)=>{
@@ -231,6 +284,14 @@
         console.log(arr)
     },(reason)=>{
         console.log(new Error(reason))
+    })
+    MyPromise.allSettled([p1,p2,p3]).then((arr)=>{
+        console.log(arr)
+    },(reason)=>{
+        console.log(new Error(reason))
+    })
+    MyPromise.any([p4,p5,p6]).then(()=>{},(reason)=>{
+        console.log(reason);
     })
 </script>
 </html>

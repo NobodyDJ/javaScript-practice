@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function create(Con, ...args) {
+        let obj=Object.create(Con.prototype);
+        let result = Con.apply(obj, args)
+        return result instanceof Object ? result : obj
+    }
+    function Test(name, age) {
+        this.name = name
+        this.age = age
+    }
+    Test.prototype.sayName = function () {
+        console.log(this.name)
+    }
+    const str=null
+    const a = create(Test, 'yck', 26)
+    console.log(a)
+    console.log(a.name) // 'yck'
+    console.log(a.age) // 26
+    a.sayName() // 'yck'
+    const b = create(str,'1','2')
+    console.log(b.name)
+</script>
+</html>

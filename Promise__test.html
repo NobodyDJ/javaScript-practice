@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+class MyPromise{
+  constructor(executor){
+    // 初始化
+    this.initValue();
+    // 初始化this绑定
+    this.initBind();
+    // 执行Promise构造函数传进来的函数，try/catch是对throw方法错误异常的处理
+    try{
+      executor(this.resolve, this.reject)
+    }catch(e){
+      this.reject(e)
+    }
+  }
+  // 初始化方法
+  initValue(){
+    this.PromiseResult = null;
+    this.PromiseState = 'pending';
+    this.onFulfilledCallbacks = [];// 保存成功的回调
+    this.onRejectedCallbacks = []; // 保存失败的回调
+  }
+  // 初始化this绑定的方法
+  initBind(){
+    // 将原型对象的方法始终绑定在实例上
+    this.resolve = this.resolve.bind(this)
+    this.reject = this.reject.bind(this)
+  }
+  // resolve方法
+  resolve(value) {
+    // 这里实现了Promise对象无法改变的功能
+    if (this.PromiseState !== 'pending') return
+    this.PromiseState = 'fulfilled';
+    this.PromiseResult = value;
+    this.onFulfilledCallbacks.forEach(fn=>{
+        fn(this.PromiseResult)
+    })
+  }
+  // reject方法
+  reject(reason) {
+    if (this.PromiseState !== 'pending') return
+    this.PromiseState = 'rejected'
+    this.PromiseResult = reason
+    this.onRejectedCallbacks.forEach(fn=>fn(this.PromiseResult))
+  }
+  // then方法
+  then(onFulfilled, onRejected){
+    // 接收两个回调函数onFulfilled, onRejected
+    // 进行参数判断，确保是函数
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val
+    onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+    // 随后就是判断Promise的状态分别执行对应的回调
+    if (this.PromiseState === 'fulfilled') {
+      onFulfilled(this.PromiseResult)
+    }else if(this.PromiseState === 'rejected'){
+      onRejected(this.PromiseResult)
+    }else if(this.PromiseState === 'pending'){
+      this.onFulfilledCallbacks.push(onFulfilled);// 保存成功的回调
+      this.onRejectedCallbacks.push(onRejected);// 保存失败的回调
+    }
+  }
+}
+const test5 = new MyPromise((resolve, reject)=>{
+    resolve('成功')
+}).then(res => console.log(res), err => console.log(err))
+
+const test6 = new MyPromise((resolve, reject)=>{
+    reject('失败')
+}).then(res => console.log(res), err => console.log(err))
+
+const test7 = new MyPromise((resolve, reject)=>{
+    setTimeout(() => {
+        resolve('成功')
+    }, 1000);
+}).then(res => console.log(res), err => console.log(err))
+</script>
+</html>
