@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    // let p1 = new Promise((resolve, reject) => {
+    //     resolve('成功')
+    //     reject('失败')
+    // })
+    // console.log('p1', p1)
+    // let p2 = new Promise((resolve, reject) => {
+    //     reject('失败')
+    //     resolve('成功')
+    // })
+    // console.log('p2', p2)
+    //     let p3 = new Promise((resolve, reject) => {
+    //     throw('报错')
+    // })
+    // console.log('p3', p3)
+    class MyPromise {
+        constructor(executor) {
+            console.log(executor)
+            // 初始化值
+            this.initValue()
+            // 初始化this执行
+            this.initBind()
+            // 执行传进来的函数，try/catch是对throw方法错误异常的处理
+            try {
+                executor(this.resolve, this.reject)
+            } catch (e) {
+                this.reject(e)
+            }
+        }
+        initValue() {
+            this.PromiseResult = null;
+            this.PromiseState = 'pending';
+            this.onFulfilledCallbacks = [];// 保存成功的回调
+            this.onRejectedCallbacks = [];// 保存失败的回调
+        }
+        initBind() {
+            this.resolve = this.resolve.bind(this)
+            this.reject = this.reject.bind(this)
+        }
+        resolve(value) {
+            if (this.PromiseState !== 'pending') return
+            this.PromiseState = 'fulfilled';
+            this.PromiseResult = value;
+            this.onFulfilledCallbacks.forEach((fn) => fn())
+            // while(this.onFulfilledCallbacks.length){
+            //     this.onFulfilledCallbacks.shift()(this.PromiseResult)
+            // }
+        }
+        reject(reason) {
+            if (this.PromiseState !== 'pending') return
+            this.PromiseState = 'rejected'
+            this.PromiseResult = reason
+            this.onRejectedCallbacks.forEach((fn) => fn())
+            // while(this.onRejectedCallbacks.length){
+            //     this.onRejectedCallbacks.shift()(this.PromiseResult)
+            // }
+        }
+        // 实现then方法
+        then(onFulfilled, onRejected) {
+            // 分别给onFulfilled和onRejected方法进行初始化
+            // 然后根据Promise的状态执行对应的方法
+            onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val
+            onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+            // 返回Promise对象的操作 .then链式调用的核心
+            var thenPromise = new MyPromise((resolve, reject) => {
+                if (this.PromiseState === 'fulfilled') {
+                    // 核心是判断是否为返回值是否为Promise，是那么要等待其完成，如果不是那么直接onFulfilled方法执行完，resolve直接结束
+                    // 为了防止thenPromise没有生成 要采用异步操作
+                    setTimeout(() => {
+                        try {
+                            let x = onFulfilled(this.PromiseResult)
+                            resolvePromise(x, resolve, reject, thenPromise)
+                        } catch (error) {
+                            reject(error)
+                        }
+                    }, 0);
+                } else if (this.PromiseState === 'rejected') {
+                    setTimeout(() => {
+                        try {
+                            let x = onRejected(this.PromiseResult)
+                            resolvePromise(x, resolve, reject, thenPromise)
+                        } catch (error) {
+                            reject(error)
+                        }
+                    }, 0);
+                } else if (this.PromiseState === 'pending') {
+                    // 这里是当Promise的状态为pending，将这些回调函数保存在数组中
+                    // 注意这里回调函数的指向，始终指向的是回调函数的执行者
+                    this.onFulfilledCallbacks.push(() => {
+                        setTimeout(() => {
+                            try {
+                                let x = onFulfilled(this.PromiseResult)
+                                resolvePromise(x, resolve, reject, thenPromise)
+                            } catch (error) {
+                                reject(error)
+                            }
+                        }, 0);
+                    })// bind绑定保证了this始终指向then方法的调用者，保证值不丢失
+                    this.onRejectedCallbacks.push(() => {
+                        setTimeout(() => {
+                            try {
+                                let x = onRejected(this.PromiseResult)
+                                resolvePromise(x, resolve, reject, thenPromise)
+                            } catch (error) {
+                                reject(error)
+                            }
+                        }, 0);
+                    })
+                }
+            })
+            // 返回一个包装的Promise
+            return thenPromise
+        }
+    }
+    // 处理返回的promise对象
+    function resolvePromise(x, resolve, reject, thenPromise) {
+        if (x === thenPromise) {
+            return reject(new TypeError('不可以返回本身！'))
+        }
+        // 防止多次调用
+        let called;
+        // x不是Null且x是对象或者函数
+        if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
+            try {
+                // A+ 规定，声明then = x的then方法
+                let then = x.then
+                // 如果then是函数，就默认是promise了
+                if (typeof then === 'function') {
+                    // 就让then执行，第一个参数是this 后面是成功的回调和失败的回调
+                    then.call(x, y => {
+                        // 失败和成功的回调只能调用一个
+                        if (called) return;
+                        called = true;
+                        // resolve出来的结果是Promise，那么继续解析
+                        resolvePromise(y, resolve, reject, thenPromise)
+                    }, err => {
+                        if (called) return;
+                        called = true;
+                        // 直接执行reject函数
+                        reject(err);
+                    })
+                }
+            } catch (error) {
+                // 也属于失败了
+                if (called) return;
+                called = true;
+                // 去then出错了那么就不要在继续执行了
+                reject(e)
+            }
+        } else {
+            resolve(x)
+        }
+    }
+    // 以下输出的结果对是一个Promise对象
+    const test1 = new MyPromise((resolve, reject) => {
+        resolve('成功')
+    })
+    console.log(test1)
+    const test2 = new MyPromise((resolve, reject) => {
+        reject('失败')
+    })
+    console.log(test2)
+    // 但是Promise状态是一旦改变就不能发生变化的，上述代码无法定下Promise的状态
+    //所以需要加一个状态判断
+    const test3 = new MyPromise((resolve, reject) => {
+        reject('失败')
+        resolve('成功')
+    })
+    console.log(test3)
+    // 但是Promise中有throw的话，相当于执行了reject.
+    // 此时，就要执行try/catch方法了
+    const test4 = new MyPromise((resolve, reject) => {
+        throw ('失败')
+    })
+    console.log(test4)
+    // 实现then方法
+    // then方法总结出几个知识点
+    // 1.then接收两个回调，一个成功回调，一个失败回调
+    // 2.当Promise状态为fulfilled执行成功回调，为rejected执行失败回调
+    // 3.如resolve或reject在定时器里，则定时器结束后再执行then
+    // 4.then支持链式调用，下一次then执行受上一次then返回值的影响
+
+    // 调用then方法以下是输出的是值
+    const test5 = new MyPromise((resolve, reject) => {
+        resolve('成功')
+    }).then(res => console.log(res), err => console.log(err))
+
+    const test6 = new MyPromise((resolve, reject) => {
+        reject('失败')
+    }).then(res => console.log(res), err => console.log(err))
+
+    // 定时器原理实现：利用Promise的状态来判断是否执行resolve和reject方法
+    // 例子如果设置了1s后执行，那么先执行then方法，将待执行的resolve和reject方法存在在数组中
+    // 经过1s后，Promise的状态变成了fulfilled或rejected状态后，再执行回调数组中存放的方法
+    const test7 = new MyPromise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('成功')
+        }, 1000);
+    }).then(res => console.log(res), err => console.log(err))
+
+    // 3.链式调用
+    // then支持链式调用，下一次then执行受上一次then返回的影响
+    // 一共有四个注意点
+    // 1、then方法本身会返回一个新的Promise对象
+    // 2、如果返回值是promise对象，返回值为成功，新promise就是成功
+    // 3、如果返回值是promise对象，返回值为失败，新promise就是失败
+    // 4、如果返回值非promise对象，新promise对象就是成功，值为此返回值
+    // 执行完then再执行then，可以让then执行之后返回一个Promise对象
+    // 注意要点：1.上一个 .then要返回一个Promise对象
+    //          2.下一个.then方法的参数，要拿到上一个.then回调的返回值
+    const test8 = new MyPromise((resolve, reject) => {
+        resolve(500)
+    }).then((res) => {
+        console.log(res)
+        return 200
+    }).then((data) => {
+        console.log(data)
+    })
+    const test9 = new MyPromise((resolve, reject) => {
+        resolve(500)
+    }).then((res) => {
+        console.log(res)
+        return new MyPromise((resolve, reject) => {
+            resolve(200)
+        })
+    }).then((data) => {
+        console.log(data)
+    })
+    // Promise本身存在的问题
+    // Promise.then的方法中，不能返回本身
+    // let p =new Promise((resolve,reject)=>{
+    //     resolve(300)
+    // })
+    // let p2 = p.then((res)=>{
+    //     console.log(res)
+    //     return p2
+    // })
+    // p2.then((res)=>{
+    //     console.log(res)
+    // })
+    let p = new MyPromise((resolve, reject) => {
+        resolve(300)
+    })
+    let p2 = p.then((res) => {
+        console.log(res)
+        return p2
+    })
+
+    p2.then((res) => {
+        console.log(res)
+    })
+</script>
+
+</html>

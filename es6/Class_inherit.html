@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // class A {
+    //     static foo = { n: 100 };
+    // }
+
+    // class B extends A {
+    //     constructor() {
+    //         super();
+    //         this.foo1=Object.assign({},A.foo)
+    //         console.log(this.foo1)
+    //     }
+    // }
+
+    // const b = new B();
+    // console.log(new B())
+    // console.log(--(new B()).foo1.n) // 99
+    // // console.log(A.foo.n) // 99
+
+    class A{
+    constructor(){
+            this.p=2;// 这里的p属性指向了A这个类
+        }
+    }
+    class B extends A{
+        get m(){
+            return super.p
+        }
+    }
+    let b = new B();
+    console.log(b.m)
+    var obj = {
+        toString() {
+            return "MyObject: " + super.toString();
+        }
+    };
+
+    console.log(obj.toString()); // MyObject: [object Object]
+    </script>
+</html>

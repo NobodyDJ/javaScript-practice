@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    // function deepClone(obj){
+    //     if(!obj && typeof obj !== 'object'){
+    //         return
+    //     }
+    //     var result = Array.isArray(obj) ? [] : {}
+    //     for(let key in obj){
+    //         if(obj[key] && typeof obj[key] === 'object'){
+    //             result[key] = deepClone(obj[key])
+    //         }else{
+    //             result[key] = obj[key]
+    //         }
+    //     }
+    //     return result
+    // }
+    // let arr = [{a:1,b:2},{a:3,b:4}];
+    // let newArr = deepClone(arr);
+    // newArr=newArr.slice(0,1)
+    // console.log(newArr);
+    // console.log(arr);
+
+    // newArr[0].a = 123;
+    // console.log(arr[0])
+    function deepClone(obj, hash = new WeakMap()) {
+        // 遇到日期对象，直接返回一个新的日期对象
+        if (obj instanceof Date) {
+            return new Date(obj);
+        }
+        // 遇到正则对象直接返回一个新的正则对象
+        if (obj instanceof RegExp) {
+            return new RegExp(obj)
+        }
+        //如果需要循环使用了，那么先从weakMap中找到数据，有就直接返回
+        if (hash.has(obj)) {
+            return hash.get(obj)
+        }
+        // 获取对象所有自身属性的特性
+        let allDesc = Object.getOwnPropertyDescriptor(obj);
+        console.log('allDesc', allDesc)
+        // 然后通过Object,create()方法继承原型链
+        let cloneObj = Object.create(Object.getPrototypeOf(obj), allDesc)
+        console.log(cloneObj)
+        hash.set(obj, cloneObj);
+        for (let key of Reflect.ownKeys(obj)) {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                cloneObj[key] = deepClone(obj[key], hash);
+            } else {
+                cloneObj[key] = obj[key];
+            }
+        }
+        return cloneObj
+    }
+    let obj = {
+        num: 1,
+        str: 'str',
+        boolean: true,
+        und: undefined,
+        nul: null,
+        obj: { name: '对象', id: 1 },
+        arr: [0, 1, 2],
+        func: function () { console.log('函数') },
+        date: new Date(1),
+        reg: new RegExp('/正则/ig'),
+        [Symbol('1')]: 1,
+    };
+    Object.defineProperty(obj, 'innumerable', {
+        enumerable: false, value: '不可枚举属性'
+    });
+    obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
+    obj.loop = obj    // 将loop设置成循环引用的属性
+    let cloneObj = deepClone(obj)
+
+    console.log('obj', obj)
+    console.log('cloneObj', cloneObj)
+</script>
+
+</html>

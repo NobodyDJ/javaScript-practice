@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    class Point{
+        constructor(x,y){
+            this.x = x;
+            this.y = y;
+        }
+        toString(){
+            return '('+this.x+','+this.y+')';
+        }
+    }
+    var p1 = new Point(2,3)
+    var p2 = new Point(3,2)
+
+    console.log(p1.__proto__ === p2.__proto__);
+    class MyClass {
+        constructor() {
+            // ...
+        }
+        get prop() {
+            return 'getter';
+        }
+        set prop(value) {
+            console.log('setter: '+value);
+        }
+    }
+    let inst = new MyClass();
+
+    inst.prop = 123;
+    // setter: 123
+
+    console.log(inst.prop)
+    // 'getter'
+
+    console.log(Point.toString())
+    class FakeMath {
+    static PI = 22 / 7;
+    static #totallyRandomNumber = 4;
+
+    static #computeRandomNumber() {
+        return FakeMath.#totallyRandomNumber;
+    }
+
+    static random() {
+        console.log('I heard you like random numbers…')
+        return FakeMath.#computeRandomNumber();
+    }
+    }
+
+    FakeMath.PI // 3.142857142857143
+    FakeMath.random()
+    // I heard you like random numbers…
+    // 4
+    // FakeMath.#totallyRandomNumber // 报错
+    // FakeMath.#computeRandomNumber() // 报错
+    let getX;
+    class C{
+        #x = 1;
+        static{
+            getX = obj => obj.#x;
+        }
+    }
+    console.log(getX(new C())) //输出1
+
+    function Person(name){
+        // new target !== undefined
+        console.log(new.target)
+        if(new.target === Person){
+            this.name=name
+        }else{
+            throw new Error('必须使用new 命令生成实例')
+        }
+    }
+    var person = new Person('张三')
+    var notAPerson = Person.call(person,'张三')// 指向为未定义的person对象
+</script>
+</html>

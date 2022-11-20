@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    class MyPromise {
+        constructor(executor) {
+            // 初始化
+            this.initValue();
+            // 初始化this绑定
+            this.initBind();
+            // 执行Promise构造函数传进来的函数，try/catch是对throw方法错误异常的处理
+            try {
+                executor(this.resolve, this.reject)
+            } catch (e) {
+                console.log(e)
+                this.reject(e)
+            }
+        }
+        // 初始化方法
+        initValue() {
+            this.PromiseResult = null;
+            this.PromiseState = 'pending';
+            this.onFulfilledCallbacks = [];// 保存成功的回调
+            this.onRejectedCallbacks = []; // 保存失败的回调
+        }
+        // 初始化this绑定的方法
+        initBind() {
+            // 将原型对象的方法始终绑定在实例上
+            this.resolve = this.resolve.bind(this)
+            this.reject = this.reject.bind(this)
+        }
+        // resolve方法
+        resolve(value) {
+            // 这里实现了Promise对象无法改变的功能
+            if (this.PromiseState !== 'pending') return
+            this.PromiseState = 'fulfilled';
+            this.PromiseResult = value;
+            this.onFulfilledCallbacks.forEach(fn => fn(this.PromiseResult))
+        }
+        // reject方法
+        reject(reason) {
+            if (this.PromiseState !== 'pending') return
+            this.PromiseState = 'rejected';
+            this.PromiseResult = reason;
+            this.onRejectedCallbacks.forEach(fn => fn(this.PromiseResult))
+        }
+        // then方法
+        then(onFulfilled, onRejected) {
+            // 接收两个回调函数onFulfilled, onRejected
+            // 进行参数判断，确保是函数
+            onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : val => val
+            onRejected = typeof onRejected === 'function' ? onRejected : reason => { throw reason }
+            // 返回Promise状态
+            let thenPromise = new MyPromise((resolve, reject) => {
+                // 随后就是判断Promise的状态分别执行对应的回调
+                if (this.PromiseState === 'fulfilled') {
+                    setTimeout(() => {
+                        console.log('走路', onFulfilled)
+                        let x = onFulfilled(this.PromiseResult);
+                        console.log(x);
+                        // 这里对返回值x进行判断，如果是Promise对象要判断Promise的状态
+                        // 如果是一个普通值，直接用resolve方法返回
+                        resolvePromise(x, resolve, reject, thenPromise);
+                    }, 0);
+                } else if (this.PromiseState === 'rejected') {
+                    onRejected(this.PromiseResult)
+                } else if (this.PromiseState === 'pending') {
+                    this.onFulfilledCallbacks.push(onFulfilled);// 保存成功的回调
+                    this.onRejectedCallbacks.push(onRejected);// 保存失败的回调
+                }
+            })
+            return thenPromise
+        }
+    }
+    function resolvePromise(x, resolve, reject, thenPromise) {
+        // 防止循环调用Promise，不可以返回本身
+        console.log(thenPromise)
+        if (x === thenPromise) {
+            return reject(new TypeError('不可以返回本身！'))
+        }
+        // 然后判断这个x是否是一个Promise对象，可以使用instanceOf方法
+        if (x instanceof MyPromise) {
+            // 完整写法
+            x.then((value) => {
+                resolve(value);
+            }, err => {
+                reject(err);
+            })
+            x.then(resolve, reject)
+        } else {
+            // 普通值
+            resolve(x)
+        }
+    }
+    let p = new MyPromise((resolve, reject) => {
+        resolve(300)
+    })
+    let p2 = p.then((res) => {
+        console.log(res)
+        return p2
+    })
+    p2.then((res) => {
+        console.log(res)
+    })
+</script>
+
+</html>
