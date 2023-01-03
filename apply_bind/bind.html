@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function person(a,b,c){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        console.log(a,b,c)
+    }
+    person.prototype.basketball = '篮球'
+    var boy = {
+        name: 'Nobody',
+    } 
+    // 构造bind
+    // bind返回的是一个函数
+    // bind知识单纯绑定了函数执行的上下文，并没有执行函数
+    // 参数可以分两段进行传入，需要参数的拼接
+    Function.prototype.newBind = function(obj){
+        if(typeof this !== 'function'){
+            throw new Error('Type Error');
+        }
+        let that = this; // 保证this不丢失
+            arr = Array.prototype.slice.call(arguments, 1),
+            newF =  function(){
+                let arr2 = Array.from(arguments),
+                    arrSum = arr.concat(arr2);
+                if(this instanceof newF){
+                    that.apply(this,arrSum);
+                }else{
+                    that.apply(obj,arrSum);
+                }
+            }
+        newF.prototype = that.prototype;
+        return newF;
+    }
+    person.newBind(boy,'唱','跳')('RAP');
+    let B = person.newBind(null,'唱','跳');// 相当于返回了一个构造函数
+    let b = new B('Rap');
+    console.log(b.basketball);
+
+</script>
+</html>

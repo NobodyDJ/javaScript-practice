@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    Function.prototype.myCall = function (context, ...arr) {
+        if (context === null && context === undefined) {
+            // 默认指向window，防止丢失
+            context = window
+        } else {
+            // 保证原始值指向该原始值的实例对象，
+            console.log(context);
+            console.log(Object(context)); // 封装该对象
+            context = Object(context);
+        }
+        const specialPrototype = Symbol('Nobody'); // 创建一个独一无二的属性
+        context[specialPrototype] = this; //该属性获取
+        let result = context[specialPrototype](...arr);
+        delete context[specialPrototype];
+        return result;
+    }
+    Function.prototype.myApply = function (context) {
+        if (context === null && context === undefined) {
+            // 默认指向window，防止丢失
+            context = window
+        } else {
+            // 保证原始值指向该原始值的实例对象，
+            console.log(context);
+            console.log(Object(context)); // 封装该对象
+            context = Object(context);
+        }
+        // 判断一个对象是否为类数组
+        function isArrayLike(o) {
+            if (o &&                                    // o不是null、undefined等
+                typeof o === 'object' &&                // o是对象
+                isFinite(o.length) &&                   // o.length是有限数值
+                o.length >= 0 &&                        // o.length为非负值
+                o.length === Math.floor(o.length) &&    // o.length是整数
+                o.length < 4294967296                   // o.length < 2^32
+            ) {
+                return true
+            } else {
+                return false
+            }
+        }
+        const specialPrototype = Symbol('Nobody');
+        context[specialPrototype] = this;
+        let args = arguments[1];
+        let res
+        if (args) {
+            if (!Array.isArray(args) && !isArrayLike(args)) {
+                throw new Error('The second type of param must be array');
+            } else {
+                args = Array.from(args); //转换为数组
+                res = context[specialPrototype](...args);//执行函数
+            }
+        } else {
+            res = context[specialPrototype]();
+        }
+        delete context[specialPrototype];// 内存回收
+        return res
+    }
+    let obj1 = {
+        name: 'A',
+        gender: 'male',
+        sayGender() {
+            console.log(this.gender)
+        }
+    }
+    let obj2 = {
+        name: 'B',
+        gender: 'female',
+        sayName(msg) {
+            console.log(this.name, msg);
+        }
+    }
+    obj2.sayName.myCall(obj1, '???');
+    obj2.sayName.myApply(obj1, ['???']);
+</script>
+
+</html>

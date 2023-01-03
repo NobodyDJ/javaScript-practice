@@ -151,6 +151,16 @@
     }
     // resolve方法
     MyPromise.resolve = function(val){
+        if (val instanceof MyPromise) return val
+        // 如果 value 是一个对象
+        if (val instanceof Object) {
+        // 如果 value 有 then 方法，则返回 value.then(resolve)
+        if (typeof val.then === 'function') {
+            return new MyPromise((resolve) => {
+                val.then(resolve)
+            })
+        }
+        }
         return new Promise((resolve, reject)=>{
             resolve(val)
         })
