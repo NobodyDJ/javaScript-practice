@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // const p1 = new Promise((resolve) => {
+    // setTimeout(() => {
+    //     resolve('resolve3');
+    //     console.log('timer1')
+    // }, 0)
+    //     resolve('resovle1');
+    //     resolve('resolve2');
+    // }).then(res => {
+    //     console.log(res)
+    //     setTimeout(() => {
+    //         console.log(p1)
+    //     }, 1000)
+    //     return 1
+    // }).finally(res => {
+    //     console.log('finally', res)
+    // })
+    // 每隔1s输出1,2,3
+    // const arr = [1,2,3];
+    // // 顺序执行
+    // arr.reduce((p,c)=>{
+    //     return p.then(()=>{
+    //         return new Promise((resolve,reject)=>{
+    //             setTimeout(() => {
+    //                 console.log(c);
+    //                 resolve(c);
+    //             }, 1000);
+    //         })
+    //     })
+    // },Promise.resolve())
+    // // 并发
+    // setTimeout(() => {
+    //     arr.reduce((p,c)=>{
+    //         return p.then(()=>{
+    //             new Promise((resolve,reject)=>{
+    //                 setTimeout(() => {
+    //                     console.log(c);
+    //                     resolve(c);
+    //                 }, 1000);
+    //             })
+    //         })
+    //     },Promise.resolve())
+    // }, 3000);
+    // // 8.2
+    // function red() {
+    //     console.log('red');
+    // }
+    // function green() {
+    //     console.log('green');
+    // }
+    // function yellow() {
+    //     console.log('yellow');
+    // }
+    // function light(fn,delay){
+    //     return new Promise((resolve, reject)=>{
+    //         setTimeout(() => {
+    //             fn();
+    //             resolve();
+    //         }, delay);
+    //     })
+    // }
+    // function step(){
+    //     let p = new Promise((resolve,reject)=>{
+    //         resolve();
+    //     }).then(()=>{
+    //         return light(red,3000);
+    //     }).then(()=>{
+    //         return light(yellow,2000);
+    //     }).then(()=>{
+    //         return light(green,1000);
+    //     }).then(()=>step())
+    // }
+    // step();
+    // const time = (timer) =>{
+    //     return new Promise(resolve=>{
+    //         setTimeout(() => {
+    //             resolve();
+    //         }, timer);
+    //     })
+    // }
+    // const ajax1 = () => time(2000).then(()=>{
+    //     console.log(1);
+    //     return 1;
+    // })
+    // const ajax2 = ()=> time(1000).then(()=>{
+    //     console.log(2);
+    //     return 2;
+    // })
+    // const ajax3 = () => time(1000).then(()=>{
+    //     console.log(3);
+    //     return 3;
+    // })
+    // function mergePromise(params){
+    //     let data = [];
+    //     let p = Promise.resolve();
+    //     console.log(p);
+    //     // 相当于第一个p进来的时候执行了then方法返回了一个新的Promise对象导致后续代码阻塞
+    //     params.forEach(element => {
+    //         debugger;
+    //         p = p.then(()=>{
+    //             return element();
+    //         }).then((res)=>{
+    //             data.push(res);
+    //             return data;
+    //         })
+    //     });
+    //     return p
+    // }
+    // mergePromise([ajax1,ajax2,ajax3]).then(data=>{
+    //     console.log("done");
+    //     console.log(data);
+    // })
+    var urls = [
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting1.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting2.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting3.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting4.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/AboutMe-painting5.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/bpmn6.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/bpmn7.png",
+        "https://hexo-blog-1256114407.cos.ap-shenzhen-fsi.myqcloud.com/bpmn8.png",
+    ];
+    function loadImg(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function() {
+                console.log("一张图片加载完成");
+                resolve(img);
+            };
+            img.onerror = function() {
+                reject(new Error('Could not load image at' + url));
+            };
+            img.src = url;
+        });
+    }
+    // 此方法缺陷在于每一组数组的请求需要等到前面的数组请求完毕后，再执行
+    // 若前者数组请求事件过长，就导致后续请求事件阻塞
+    // 好处就是容易想到，也好理解
+    // function limitLoad(urls, handler, limit){
+    //     const data = [];
+    //     let p = Promise.resolve();// 初始值循环遍历可以提示使用reduce进行遍历
+    //     // 将数组转换为二元数组
+    //     const handlerUrls = (urls) =>{
+    //         let doubleDim = [];
+    //         const len = Math.ceil(urls.length / limit);//用于循环限制
+    //         for(let i = 0; i < len; i++){
+    //             doubleDim.push(urls.slice(i*limit,(i + 1)*limit));
+    //         }
+    //         return doubleDim;
+    //     }
+    //     const ajaxUrl = (urls)=>{
+    //         console.log(urls);
+    //         let result = urls.map((url)=>handler(url));
+    //         console.log(result)
+    //         return result;
+    //     }
+    //     const doubleDim = handlerUrls(urls);
+    //     doubleDim.forEach((urlCollect)=>{
+    //         debugger;
+    //         p = p.then(()=>Promise.all(ajaxUrl(urlCollect))).then(res=>{
+    //             console.log(res);
+    //             data.push(...res);
+    //             return data;
+    //         })
+    //     })
+    //     console.log('p',p);
+    //     return p;
+    // }
+    // limitLoad(urls,loadImg,3).then(res=>{
+    //     console.log(res);
+    //     res.forEach((item)=>{
+    //         document.body.appendChild(item);
+    //     })
+    // })
+    // 想法二的关键在于三个元素发送并发请求后，若其中一个请求率先完成，则换出来
+    // 把后面没发送的请求换进来以此类推，想到使用Promise.race方法
+    function limitLoad2(urls, handler, limit){
+        let sequence = [...urls];
+        
+    }
+</script>
+</html>

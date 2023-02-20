@@ -24,8 +24,9 @@
             let timer;// 利用闭包的原理，如果不把Timer放到外面则clearTimeout这个函数没有作用
             return function () {
                 clearTimeout(timer);
+                let context = this
                 timer = setTimeout(() => {
-                    fn.apply(this, arguments); //将上下文始终绑定执行该函数的上下文，这里指的是#debounce这个DOM元素
+                    fn.apply(context, arguments); //将上下文始终绑定执行该函数的上下文，这里指的是#debounce这个DOM元素
                     // fn();
                 }, delay);
             }
@@ -35,7 +36,7 @@
         function sayDebounce() {
             // ... 有些需要防抖的工作，在这里执行
             let str = "防抖成功！"
-            console.log(this.innerHeight);
+            console.log(this);
             console.log(str);
         }
 

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function person(a,b,c){
+        console.log(this.name);
+        console.log(a,b,c);
+    }
+    person.prototype.collection = '收藏';
+    let egg = {name: '蛋老师'}
+    // 1.两次传参，两个参数合并
+    Function.prototype.myBind = function(obj,...args1){
+        if(typeof this !== 'function'){
+            console.log('调用对象必须是个函数')
+        }
+        let that = this,
+            o = function() {};
+            fn = function(...args2){
+                let arr = [...args1,...args2];
+                // 注意：这里使用instanceof来判断对返回的函数，是否使用了new
+                // 这里new中的this执行有点复杂，暂时不考虑 
+                if(this instanceof o){
+                    that.apply(this,arr);
+                }else{
+                    that.apply(obj,arr);
+                }
+            }
+        // 原型链上的继承，利用了o这个空函数做过度，属于优化的部分
+        // fn.prototype = that.prototype
+        o.prototype = that.prototype;
+        fn.prototype = new o;  
+        return fn;
+    }
+    let bibi = person.myBind(egg,'点赞','投币');
+    let b = new bibi('充电');// this是fn
+    console.log(b.collection);
+    // let b = bibi('充电'); // this是window
+</script>
+</html>

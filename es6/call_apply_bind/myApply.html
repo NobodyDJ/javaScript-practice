@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // apply与call唯一的不同点在于,apply的第二个参数接受的是数组
+    // 需要判断第二个参数是否是数组,否则不符和条件
+    function isArrayLike(obj){
+        if(
+            obj &&                                    // o不是null、undefined等
+            typeof obj === 'object' &&                // o是对象
+            isFinite(obj.length) &&                   // obj.length是有限数值
+            obj.length >= 0 &&                        // obj.length为非负值
+            obj.length === Math.floor(obj.length) &&    // obj.length是整数
+            obj.length < 4294967296){
+                return true;
+            }else{
+                return false;
+            }
+    }
+    Function.prototype.myApply = function(obj,arr){
+        let context;
+        let result;
+        if(obj === null || obj === undefined){
+            context = Window;
+        }else{
+            context = new Object(obj);
+        }
+        let specialAttribute = Symbol('Nobody');
+        context[specialAttribute] = this;
+        if(arr){
+            if(!Array.isArray(arr)&&!isArrayLike(arr)){
+                throw Error('第二个参数必须是一个数组');
+            }else{
+                // 别忘记转换为数组
+                let args = Array.from(arr);
+                result = context[specialAttribute](...args);
+            }
+        }else{
+            result = context[specialAttribute]();
+        }
+        delete context[specialAttribute];
+        return result;
+    }
+    //test
+    const arr = [15, 6, 12, 13, 16];
+    const max = Math.max.myApply(Math, arr); // 16
+    const min = Math.min.myApply(Math, arr); // 6
+    console.log(max,min);
+</script>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 1. 要用一个特殊的属性来保存this即需要执行的函数，执行完该属性应当立马删除
+    // 2. 如果出现绑定的对象为null或者undefined应该默认绑定到window上面
+    // 3. call方法第二个参数接受的是参数列表
+    // 4. 注意执行call方法时，是立马执行该函数
+    function Person(name,age){
+        let obj = {
+            name,
+            age
+        }
+        return obj
+    }
+    Function.prototype.myCall = function(obj, ...args){
+        let context;
+        if(obj === null || obj === undefined){
+            context = Window;
+        }else{
+            context = new Object(obj);
+        }
+        let specialAttribute = Symbol('Nobody');
+        context[specialAttribute] = this;
+        let result = context[specialAttribute](...args);
+        delete context[specialAttribute];
+        return result;
+    } 
+    
+
+    let arrayLike = {
+        0: '我',
+        1: '是',
+        length: 2
+    }
+    Array.prototype.push.myCall(arrayLike,'Nobody','DJ');
+    console.log(arrayLike) // {0: '我', 1: '是', 2: 'Nobody', 3: 'DJ', length: 4}
+</script>
+</html>
